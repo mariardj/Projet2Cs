@@ -6,37 +6,11 @@ import RegionFilter from './components/RegionFilter';
 import ViewsFilter from './components/ViewsFilter';
 import SignIn from './components/SignIn';
 import TerrainTable from './components/TerrainTable';
+import Home from './components/Home';
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-       {/* { <SidebarAndNavbar /> } */}
-        {/* { <RegionFilter /> } */}
-        {/* { <SignIn /> } */}
-        
-       {/* { <ViewsFilter /> }   */}
-       {/* <div style={{ padding: '20px' }}>
-      <RemarqueCard
-        title="Titre de la remarque"
-        body="Corp de la solution..Corp de la solution.."
-        severity="High"
-      />
-    </div> */}
-      <NavBar />
-      <TerrainTable />
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Home />
     </div>
   );
 }
