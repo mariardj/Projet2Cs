@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import NavBar from "./NavBar";
 import mic from '../assets/mic.svg';
 import excel from '../assets/excel.svg';
+import SidebarAndNavbar from './SidebarAndNavbar';
 
 // Data Models
 class Rapport {

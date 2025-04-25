@@ -67,7 +67,7 @@ const SidebarContainer = styled.nav`
   top: 0;
   width: 17vw;
   height: 100vh;
-  background-color: #19202b;
+  background-color: #1e293b;
   color: white;
   display: flex;
   flex-direction: column;

@@ -7,10 +7,12 @@ import ViewsFilter from './components/ViewsFilter';
 import SignIn from './components/SignIn';
 import TerrainTable from './components/TerrainTable';
 import Home from './components/Home';
+import Filesview from './components/Filesview';
+import Notifications from './components/Notifications';
 function App() {
   return (
     <div className="App">
-      <Home />
+      <Notifications/>
     </div>
   );
 }
