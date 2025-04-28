@@ -1,12 +1,41 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import logo2 from '../assets/logo2.svg';
 import sonat from '../assets/sonat.svg';
 
 const SignIn = () => {
-  const handleSubmit = (e) => {
+  const [registrationNumber, setRegistrationNumber] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log('Login submitted');
+    setError(''); // Clear previous errors
+
+    try {
+      // Replace with actual authentication API call
+      const response = await fakeAuthAPI(registrationNumber, password);
+      
+      if (response.success) {
+        navigate('/home'); // Redirect on success
+      } else {
+        setError('Password or registration number incorrect');
+      }
+    } catch (err) {
+      setError('An error occurred during login');
+    }
+  };
+
+  // Mock authentication function - replace with real API call
+  const fakeAuthAPI = async (regNumber, pwd) => {
+    // Example validation - replace with your actual logic
+    const isValid = regNumber.trim() !== '' && pwd.trim() !== '';
+    return new Promise(resolve => {
+      setTimeout(() => {
+        resolve({ success: isValid });
+      }, 500);
+    });
   };
 
   return (
@@ -26,6 +55,8 @@ const SignIn = () => {
                 id="registrationNumber"
                 style={styles.input}
                 placeholder="Enter your registration number"
+                value={registrationNumber}
+                onChange={(e) => setRegistrationNumber(e.target.value)}
               />
             </div>
             <div style={styles.inputGroup}>
@@ -37,8 +68,12 @@ const SignIn = () => {
                 id="password"
                 style={styles.input}
                 placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </div>
+            {/* Error message positioned below inputs but above button */}
+            {error && <div style={styles.error}>{error}</div>}
             <button type="submit" style={styles.button}>
               Log in
             </button>
@@ -60,6 +95,13 @@ const styles = {
     backgroundColor: '#f5f5f5',
     padding: '20px',
     fontFamily: 'Arial, sans-serif',
+  },
+  error: {
+    color: 'red',
+    margin: '10px 0 15px 0', // Added more vertical spacing
+    textAlign: 'center',
+    fontSize: '14px',
+    width: '100%',
   },
   logo: {
     width: '20%',

@@ -17,6 +17,12 @@ const NavBar = () => {
         navigate('/'); // Redirect to login page on logout
     };
 
+    // Determine active link based on current path
+    const isActive = (path) => {
+        return location.pathname.toLowerCase() === path.toLowerCase() || 
+               location.pathname.toLowerCase().startsWith(`${path.toLowerCase()}/`);
+    };
+
     return (
         <nav style={{
             backgroundColor: "#273142",
@@ -37,10 +43,8 @@ const NavBar = () => {
                 alt="logo"
                 style={{ 
                     height: "30%", 
-                    
                     objectFit: "contain"
                 }} 
-                //onClick={() => navigate('/acceuil')} 
             />
 
             {/* Navigation Links */}
@@ -53,13 +57,16 @@ const NavBar = () => {
                 flexGrow: 1,
                 justifyContent: "center",
             }}>
-                {["Home", "History"].map((item) => (
-                    <li key={item}>
+                {[
+                    { path: "/home", label: "Home" },
+                    { path: "/history", label: "History" }
+                ].map((item) => (
+                    <li key={item.path}>
                         <Link 
-                            to={`/${item}`} 
+                            to={item.path} 
                             style={{
-                                color: location.pathname === `/${item}` ? "#FF8500" : "white",
-                                textDecoration: location.pathname === `/${item}` ? "underline" : "none",
+                                color: isActive(item.path) ? "#FF8500" : "white",
+                                textDecoration: isActive(item.path) ? "underline" : "none",
                                 textUnderlineOffset: "4px",
                                 fontSize: "16px",
                                 fontWeight: "bold",
@@ -67,23 +74,25 @@ const NavBar = () => {
                                 transition: "color 0.3s, text-decoration 0.3s"
                             }}
                             onMouseOver={(e) => {
-                                e.target.style.color = "#FF8500";
-                                e.target.style.textDecoration = "underline";
+                                if (!isActive(item.path)) {
+                                    e.target.style.color = "#FF8500";
+                                    e.target.style.textDecoration = "underline";
+                                }
                             }}
                             onMouseOut={(e) => {
-                                if (location.pathname !== `/${item}`) {
+                                if (!isActive(item.path)) {
                                     e.target.style.color = "white";
                                     e.target.style.textDecoration = "none";
                                 }
                             }}
                         >
-                            {item}
+                            {item.label}
                         </Link>
                     </li>
                 ))}
             </ul>
 
-            {/* Profile Dropdown */}
+            {/* Rest of your component remains the same */}
             <button 
                 style={{
                     display: "flex",

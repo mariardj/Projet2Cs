@@ -12,9 +12,23 @@ const TableView = () => {
     { id: '19984112', title: 'CM Yogi says 100 chartered planes...', date: '17-Jan-2024 | 09:45 am', region: 'CM Yogi' },
     { id: '19984113', title: 'Now 28, youngest eyewitness in...', date: '17-Jan-2024 | 09:50 am', region: 'Eyewitness' },
     { id: '19984114', title: 'Bengaluru startup CEO Suhana...', date: '18-Jan-2024 | 12:46 pm', region: 'Startup' },
+    { id: '19984109', title: 'Paying tribute to democracy...', date: '17-Jan-2024 | 09:50 am', region: 'Tribute' },
+    { id: '19984110', title: "Congress's 'Ram Ram' to Ayodhya...", date: '18-Jan-2024 | 12:46 pm', region: 'Congress' },
+    { id: '19984111', title: 'India-Maldives row: Tour packages...', date: '16-Jan-2024 | 03:45 pm', region: 'India-Maldives' },
+    { id: '19984112', title: 'CM Yogi says 100 chartered planes...', date: '17-Jan-2024 | 09:45 am', region: 'CM Yogi' },
+    { id: '19984113', title: 'Now 28, youngest eyewitness in...', date: '17-Jan-2024 | 09:50 am', region: 'Eyewitness' },
+    { id: '19984114', title: 'Bengaluru startup CEO Suhana...', date: '18-Jan-2024 | 12:46 pm', region: 'Startup' },
+    { id: '19984109', title: 'Paying tribute to democracy...', date: '17-Jan-2024 | 09:50 am', region: 'Tribute' },
+    { id: '19984110', title: "Congress's 'Ram Ram' to Ayodhya...", date: '18-Jan-2024 | 12:46 pm', region: 'Congress' },
+    { id: '19984111', title: 'India-Maldives row: Tour packages...', date: '16-Jan-2024 | 03:45 pm', region: 'India-Maldives' },
+    { id: '19984112', title: 'CM Yogi says 100 chartered planes...', date: '17-Jan-2024 | 09:45 am', region: 'CM Yogi' },
+    { id: '19984113', title: 'Now 28, youngest eyewitness in...', date: '17-Jan-2024 | 09:50 am', region: 'Eyewitness' },
+    { id: '19984114', title: 'Bengaluru startup CEO Suhana...', date: '18-Jan-2024 | 12:46 pm', region: 'Startup' },
   ];
 
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 7;
 
   const sortedData = [...tableData].sort((a, b) => {
     if (!sortConfig.key) return 0;
@@ -34,6 +48,12 @@ const TableView = () => {
     return 0;
   });
 
+  const indexOfLastRow = currentPage * rowsPerPage;
+  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
+  const currentRows = sortedData.slice(indexOfFirstRow, indexOfLastRow);
+
+  const totalPages = Math.ceil(tableData.length / rowsPerPage);
+
   const requestSort = (key) => {
     let direction = 'ascending';
     if (sortConfig.key === key && sortConfig.direction === 'ascending') {
@@ -50,6 +70,8 @@ const TableView = () => {
       minHeight: '100vh',
     },
     header: {
+      cursor: 'pointer',
+      userSelect: 'none',
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
@@ -102,6 +124,24 @@ const TableView = () => {
       height: '18px',
       cursor: 'pointer',
     },
+    pagination: {
+      marginTop: '1rem',
+      display: 'flex',
+      justifyContent: 'center',
+      gap: '0.5rem',
+    },
+    pageButton: {
+      padding: '0.4rem 0.8rem',
+      border: '1px solid #ccc',
+      backgroundColor: '#fff',
+      cursor: 'pointer',
+      borderRadius: '4px',
+    },
+    activePageButton: {
+      backgroundColor: '#FF8500',
+      color: '#fff',
+      border: '1px solid #e84118',
+    }
   };
 
   return (
@@ -119,14 +159,22 @@ const TableView = () => {
           <tr>
             <th style={styles.th}>ID</th>
             <th style={styles.th}>Title</th>
-            <th style={styles.th} onClick={() => requestSort('date')}>Added Date {sortConfig.key === 'date' ? (sortConfig.direction === 'ascending' ? '↑' : '↓') : ''}</th>
-            <th style={styles.th} onClick={() => requestSort('region')}>Region {sortConfig.key === 'region' ? (sortConfig.direction === 'ascending' ? '↑' : '↓') : ''}</th>
+            <th style={styles.th} onClick={() => requestSort('date')}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                Added Date {sortConfig.key === 'date' ? (sortConfig.direction === 'ascending' ? '↑' : '↓') : ''}
+              </div>
+            </th>
+            <th style={styles.th} onClick={() => requestSort('region')}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                Region {sortConfig.key === 'region' ? (sortConfig.direction === 'ascending' ? '↑' : '↓') : ''}
+              </div>
+            </th>
             <th style={styles.th}><div>View</div><div>Dashboard</div></th>
             <th style={styles.th}><div>View</div><div>File</div></th>
           </tr>
         </thead>
         <tbody>
-          {sortedData.map((row, index) => (
+          {currentRows.map((row, index) => (
             <tr key={index}>
               <td style={styles.td}>{row.id}</td>
               <td style={styles.td}>{row.title}</td>
@@ -138,6 +186,37 @@ const TableView = () => {
           ))}
         </tbody>
       </table>
+
+      <div style={styles.pagination}>
+        <button
+          style={styles.pageButton}
+          onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+          disabled={currentPage === 1}
+        >
+          Previous
+        </button>
+
+        {[...Array(totalPages)].map((_, index) => (
+          <button
+            key={index}
+            style={{
+              ...styles.pageButton,
+              ...(currentPage === index + 1 ? styles.activePageButton : {}),
+            }}
+            onClick={() => setCurrentPage(index + 1)}
+          >
+            {index + 1}
+          </button>
+        ))}
+
+        <button
+          style={styles.pageButton}
+          onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+          disabled={currentPage === totalPages}
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 };

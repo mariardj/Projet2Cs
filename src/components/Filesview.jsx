@@ -106,7 +106,7 @@ const Filesview = () => {
               <img
                 src={fileIcon}
                 alt="file"
-                style={{ width: '40px', height: '40px' }}
+                style={{ width: '60px', height: '60px' }}
               />
               <span style={{ marginTop: '10px', fontWeight: '500', fontSize: '14px', textAlign: 'center' }}>
                 {fileItem.title}

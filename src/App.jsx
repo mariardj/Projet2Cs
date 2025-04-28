@@ -14,14 +14,14 @@ import Dashboardsview from './components/Dashboardsview';
 import TableView from './components/TableView';
 import CostStatusPage from './components/CostStatusPage'; // 👈 new import
 import ReservoirProgressChart from './components/ReservoirProgressChart';
-
+import HistoryP from './components/HistoryP';
 function App() {
 
   return (
     <div className="App">
       <Routes>
         <Route path="/SignIn" element={<SignIn />} />
-        <Route path="/TerrainTable" element={<TerrainTable />} />
+        <Route path="/history" element={<HistoryP />} />
         <Route path="/Home" element={<Home />} />
         <Route path="/Filesview" element={<Filesview />} />
         <Route path="/Notifications" element={<Notifications />} />
