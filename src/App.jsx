@@ -13,6 +13,7 @@ import Notifications from './components/Notifications';
 import Dashboardsview from './components/Dashboardsview';
 import TableView from './components/TableView';
 import CostStatusPage from './components/CostStatusPage'; // 👈 new import
+import ReservoirProgressChart from './components/ReservoirProgressChart';
 
 function App() {
 
@@ -27,7 +28,7 @@ function App() {
         <Route path="/Dashboardsview" element={<Dashboardsview />} />
         <Route path="/TableView" element={<TableView/>} />
         <Route path="/CostStatus" element={<CostStatusPage />} />
-
+        <Route path="/ReservoirProgressChart" element={<ReservoirProgressChart />} />
       </Routes>
 
     </div>
