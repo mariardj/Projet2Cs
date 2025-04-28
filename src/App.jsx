@@ -11,7 +11,11 @@ import Home from './components/Home';
 import Filesview from './components/Filesview';
 import Notifications from './components/Notifications';
 import Dashboardsview from './components/Dashboardsview';
+import TableView from './components/TableView';
+import CostStatusPage from './components/CostStatusPage'; // 👈 new import
+
 function App() {
+
   return (
     <div className="App">
       <Routes>
@@ -21,6 +25,9 @@ function App() {
         <Route path="/Filesview" element={<Filesview />} />
         <Route path="/Notifications" element={<Notifications />} />
         <Route path="/Dashboardsview" element={<Dashboardsview />} />
+        <Route path="/TableView" element={<TableView/>} />
+        <Route path="/CostStatus" element={<CostStatusPage />} />
+
       </Routes>
 
     </div>

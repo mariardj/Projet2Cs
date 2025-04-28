@@ -1,16 +1,46 @@
-import React from 'react';
-import sonat from '../assets/sonat.svg';
+import React, { useState } from 'react';
+
+import file2 from '../assets/file2.svg';
+import dash from '../assets/dash.svg';
 
 const TableView = () => {
   const tableData = [
-    { id: '19984108', title: 'Tata Harrier and Safari Secure...', date: '17-Jan-2024 | 09:45 am', redaction: 'Tata Harrier' },
-    { id: '19984109', title: 'Paying tribute to democracy...', date: '17-Jan-2024 | 09:50 am', redaction: 'Tribute' },
-    { id: '19984110', title: "Congress's 'Ram Ram' to Ayodhya...", date: '18-Jan-2024 | 12:46 pm', redaction: 'Congress' },
-    { id: '19984111', title: 'India-Maldives row: Tour packages...', date: '16-Jan-2024 | 03:45 pm', redaction: 'India-Maldives' },
-    { id: '19984112', title: 'CM Yogi says 100 chartered planes...', date: '17-Jan-2024 | 09:45 am', redaction: 'CM Yogi' },
-    { id: '19984113', title: 'Now 28, youngest eyewitness in...', date: '17-Jan-2024 | 09:50 am', redaction: 'Eyewitness' },
-    { id: '19984114', title: 'Bengaluru startup CEO Suhana...', date: '18-Jan-2024 | 12:46 pm', redaction: 'Startup' },
+    { id: '19984108', title: 'Tata Harrier and Safari Secure...', date: '17-Jan-2024 | 09:45 am', region: 'Tata Harrier' },
+    { id: '19984109', title: 'Paying tribute to democracy...', date: '17-Jan-2024 | 09:50 am', region: 'Tribute' },
+    { id: '19984110', title: "Congress's 'Ram Ram' to Ayodhya...", date: '18-Jan-2024 | 12:46 pm', region: 'Congress' },
+    { id: '19984111', title: 'India-Maldives row: Tour packages...', date: '16-Jan-2024 | 03:45 pm', region: 'India-Maldives' },
+    { id: '19984112', title: 'CM Yogi says 100 chartered planes...', date: '17-Jan-2024 | 09:45 am', region: 'CM Yogi' },
+    { id: '19984113', title: 'Now 28, youngest eyewitness in...', date: '17-Jan-2024 | 09:50 am', region: 'Eyewitness' },
+    { id: '19984114', title: 'Bengaluru startup CEO Suhana...', date: '18-Jan-2024 | 12:46 pm', region: 'Startup' },
   ];
+
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
+
+  const sortedData = [...tableData].sort((a, b) => {
+    if (!sortConfig.key) return 0;
+    let aValue = a[sortConfig.key];
+    let bValue = b[sortConfig.key];
+
+    if (sortConfig.key === 'date') {
+      aValue = new Date(aValue.split('|')[0].trim());
+      bValue = new Date(bValue.split('|')[0].trim());
+    } else {
+      aValue = aValue.toLowerCase();
+      bValue = bValue.toLowerCase();
+    }
+
+    if (aValue < bValue) return sortConfig.direction === 'ascending' ? -1 : 1;
+    if (aValue > bValue) return sortConfig.direction === 'ascending' ? 1 : -1;
+    return 0;
+  });
+
+  const requestSort = (key) => {
+    let direction = 'ascending';
+    if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+      direction = 'descending';
+    }
+    setSortConfig({ key, direction });
+  };
 
   const styles = {
     container: {
@@ -54,6 +84,7 @@ const TableView = () => {
       textAlign: 'left',
       fontWeight: '600',
       borderBottom: '2px solid #eee',
+      cursor: 'pointer',
     },
     td: {
       padding: '0.75rem 1rem',
@@ -61,7 +92,12 @@ const TableView = () => {
       fontSize: '0.95rem',
       color: '#333',
     },
-    sonat: {
+    dash: {
+      width: '18px',
+      height: '18px',
+      cursor: 'pointer',
+    },
+    file2: {
       width: '18px',
       height: '18px',
       cursor: 'pointer',
@@ -83,21 +119,21 @@ const TableView = () => {
           <tr>
             <th style={styles.th}>ID</th>
             <th style={styles.th}>Title</th>
-            <th style={styles.th}>Added Date</th>
-            <th style={styles.th}>Rédaction</th>
-            <th style={styles.th}>View Dashboard</th>
-            <th style={styles.th}>View File</th>
+            <th style={styles.th} onClick={() => requestSort('date')}>Added Date {sortConfig.key === 'date' ? (sortConfig.direction === 'ascending' ? '↑' : '↓') : ''}</th>
+            <th style={styles.th} onClick={() => requestSort('region')}>Region {sortConfig.key === 'region' ? (sortConfig.direction === 'ascending' ? '↑' : '↓') : ''}</th>
+            <th style={styles.th}><div>View</div><div>Dashboard</div></th>
+            <th style={styles.th}><div>View</div><div>File</div></th>
           </tr>
         </thead>
         <tbody>
-          {tableData.map((row, index) => (
+          {sortedData.map((row, index) => (
             <tr key={index}>
               <td style={styles.td}>{row.id}</td>
               <td style={styles.td}>{row.title}</td>
               <td style={styles.td}>{row.date}</td>
-              <td style={styles.td}>{row.redaction}</td>
-              <td style={styles.td}><img src={sonat} style={styles.sonat} alt="dashboard" /></td>
-              <td style={styles.td}><img src={sonat} style={styles.sonat} alt="file" /></td>
+              <td style={styles.td}>{row.region}</td>
+              <td style={styles.td}><img src={dash} style={styles.dash} alt="dashboard" /></td>
+              <td style={styles.td}><img src={file2} style={styles.file2} alt="file" /></td>
             </tr>
           ))}
         </tbody>
