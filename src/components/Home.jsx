@@ -144,7 +144,7 @@ const Home = () => {
             </div>
 
             <div style={{ padding: 25, textAlign: 'center', flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-              <img src={mic} alt="Mic" style={{ width: 50, margin: '0 auto 15px', opacity: 0.7 }} />
+              <img src={mic} alt="Mic" style={{ width: 70, margin: '0 auto 15px', opacity: 0.7 }} />
               <p style={{ color: '#666', marginBottom: 15, fontSize: 14 }}>Fill out the remark form</p>
               <button
                 onClick={excelFile ? openModal : null}
