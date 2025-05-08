@@ -1,37 +1,35 @@
 import React, { useState } from 'react';
 
-const ViewsFilter = () => {
+const ViewsFilter = ({ selectedView, onSelect }) => {
   const views = ['Table View', 'Dashboards View', 'Files View'];
-  const [selectedView, setSelectedView] = useState('Table View');
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleDropdown = () => setIsOpen(!isOpen);
-
   const handleSelect = (view) => {
-    setSelectedView(view);
+    onSelect(view); // Communiquer le choix au parent
     setIsOpen(false);
   };
 
   return (
     <div className="views-filter">
-      <div className={`filter-box ${isOpen ? 'open' : ''}`} onClick={toggleDropdown}>
-        <span className="selected-view">{selectedView}</span>
-        <span className={`arrow ${isOpen ? 'up' : 'down'}`}>▼</span>
-      </div>
+    <div className={`filter-box ${isOpen ? 'open' : ''}`} onClick={toggleDropdown}>
+      <span className="selected-view">{selectedView}</span>
+      <span className={`arrow ${isOpen ? 'up' : 'down'}`}>▼</span>
+    </div>
 
-      {isOpen && (
-        <ul className="views-list">
-          {views.map((view) => (
-            <li
-              key={view}
-              onClick={() => handleSelect(view)}
-              className={view === selectedView ? 'selected' : ''}
-            >
-              {view}
-            </li>
-          ))}
-        </ul>
-      )}
+    {isOpen && (
+      <ul className="views-list">
+        {views.map((view) => (
+          <li
+            key={view}
+            onClick={() => handleSelect(view)}
+            className={view === selectedView ? 'selected' : ''}
+          >
+            {view}
+          </li>
+        ))}
+      </ul>
+    )}
 
       <style>{`
         .views-filter {
