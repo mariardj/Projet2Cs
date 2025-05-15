@@ -19,23 +19,12 @@ const Filesview = () => {
 
   return (
     <div style={{ backgroundColor: '#F6F4F2', minHeight: '100vh' }}>
-      <SidebarAndNavbar />
-
-      {/* Ensure content starts below navbar and beside sidebar */}
+    
       <div
-        style={{
-          marginLeft: '240px',   // adjust based on sidebar width
-          paddingTop: '120px',    // increased to clear navbar
-          paddingLeft: '20px',
-          paddingRight: '20px'
-        }}
+       
       >
-        <h1 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '20px' }}>
-          Reports History
-        </h1>
+      
 
-        {/* View & Date filter controls */}
-        {/* View & Date filters */}
         <div
           style={{
             display: 'flex',
@@ -44,22 +33,7 @@ const Filesview = () => {
             marginBottom: '20px'
           }}
         >
-          <select
-            value={view}
-            onChange={e => setView(e.target.value)}
-            style={{
-              padding: '8px 16px',
-              backgroundColor: '#FFF',
-              border: '2px solid #FF8500',
-              borderRadius: '40px',
-              color: '#FF8500',
-              cursor: 'pointer'
-            }}
-          >
-            <option>Files View</option>
-            <option>Dashboard View</option>
-            <option>Table View</option>
-          </select>
+       
 
           <select
             value={filterDate}

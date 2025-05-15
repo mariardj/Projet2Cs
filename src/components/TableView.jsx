@@ -63,12 +63,7 @@ const TableView = () => {
   };
 
   const styles = {
-    container: {
-      padding: '2rem',
-      fontFamily: 'Arial, sans-serif',
-      backgroundColor: '#f5f6fa',
-      minHeight: '100vh',
-    },
+  
     header: {
       cursor: 'pointer',
       userSelect: 'none',
@@ -145,15 +140,15 @@ const TableView = () => {
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.header}>
+    <div >
+      {/* <div style={styles.header}>
         <h1 style={styles.title}>Reports History</h1>
         <div style={styles.buttonGroup}>
           <button style={styles.button}>Table View</button>
           <button style={styles.button}>Files View</button>
           <button style={styles.button}>Dashboard View</button>
         </div>
-      </div>
+      </div> */}
       <table style={styles.table}>
         <thead>
           <tr>
