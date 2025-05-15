@@ -15,6 +15,10 @@ import TableView from './components/TableView';
 import CostStatusPage from './components/CostStatusPage'; // 👈 new import
 import ReservoirProgressChart from './components/ReservoirProgressChart';
 import HistoryP from './components/HistoryP';
+import StatsCards from './components/StatsCards' ;
+import Card from './components/Card' ;
+import DrillingProgressChart from './components/DrillingProgressChart' ;
+
 function App() {
 
   return (
@@ -29,7 +33,10 @@ function App() {
         <Route path="/TableView" element={<TableView/>} />
         <Route path="/CostStatus" element={<CostStatusPage />} />
         <Route path="/ReservoirProgressChart" element={<ReservoirProgressChart />} />
-      </Routes>
+        <Route path="/StatsCards" element={<StatsCards />} />
+        <Route path="/Card" element={<Card />} />
+        <Route path="/DrillingProgressChart" element={<DrillingProgressChart />} />
+        </Routes>
 
     </div>
   );
