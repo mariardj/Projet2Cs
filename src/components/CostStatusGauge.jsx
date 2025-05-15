@@ -1,36 +1,42 @@
 import React from "react";
 import ReactSpeedometer from "react-d3-speedometer";
 
-export default function CostStatusGauge() {
+export default function CostStatusGauge({ small = false }) {
+  const size = small
+    ? { width: 200, height: 130, ringWidth: 20, fontSize: '14px' }
+    : { width: 300, height: 200, ringWidth: 30, fontSize: '18px' };
+
   return (
-    <div style={{ textAlign: "center" }}>
-      <h2>The cost status of the current phase</h2>
+    <div
+      style={{
+        width: size.width + 40,
+        padding: '16px',
+        background: '#fff',
+        borderRadius: '10px',
+        boxShadow: '0 2px 12px rgba(0, 0, 0, 0.05)',
+        textAlign: 'center',
+        boxSizing: 'border-box',
+        
+      }}
+    >
+      <h3 style={{ fontSize: size.fontSize, marginBottom: '12px' }}>
+        Cost status of current phase
+      </h3>
 
       <ReactSpeedometer
-       maxValue={30000} // Maximum value on the gauge
-       value={4900} // Current value to display on the gauge
-       needleColor="black" // Color of the needle pointer
-       
-       segments={3} // Total number of segments
-       currentValueText="$4,900" // Text displayed under the gauge showing the current value
-
-       // Defining custom segment stops:
-       // This will create 3 segments:
-       //  - 0 to 8000
-       //  - 8000 to 15000
-       //  - 16000 to 30000
-
-       customSegmentStops={[0, 8000, 16000, 30000]}
-
-
-
+        maxValue={30000}
+        value={4900}
+        needleColor="black"
+        segments={3}
+        currentValueText="$4,900"
+        customSegmentStops={[0, 8000, 16000, 30000]}
         segmentColors={["#00B69B", "#FF8500", "#B60000"]}
-        ringWidth={30}
-        width={300}
-        height={200}
+        ringWidth={size.ringWidth}
+        width={size.width}
+        height={size.height}
       />
 
-      <p>12 1/4" × 9 5/8"</p>
+      {!small && <p style={{ fontSize: '13px' }}>12 1/4" × 9 5/8"</p>}
     </div>
   );
 }

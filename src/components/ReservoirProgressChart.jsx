@@ -9,7 +9,7 @@ const data = [
   { date: 'Jan 16', value: 200 },
   { date: 'Jan 24', value: 250 },
   { date: 'Jan 31', value: 300 },
-  { date: 'Feb 1', value: 220 },
+  { date: 'Feb 1', value: 450 },
 ];
 
 export default function ReservoirProgressChart() {

@@ -125,7 +125,10 @@ const Navbar = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 0 20px;
+
+  z-index: 1000; /* 👈 Ensure it stacks above other content */
 `;
+
 
 const Content = styled.div`
   margin-left: 17vw;
@@ -259,7 +262,7 @@ const SidebarAndNavbar = () => {
                            <div style={{
                                fontSize: "14px",
                                color: "#4E4E4E",
-                               zIndex: "50",
+                               zIndex: "9999", // Make it very high
                                width: "320px",
                                backgroundColor: "white",
                                borderRadius: "8px",
