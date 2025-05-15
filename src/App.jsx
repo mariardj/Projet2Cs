@@ -17,6 +17,7 @@ import ReservoirProgressChart from './components/ReservoirProgressChart';
 import HistoryP from './components/HistoryP';
 import StatsCards from './components/StatsCards';
 import DrillingProgressChart from './components/DrillingProgressChart';
+import ReportsPage  from './components/ReportsPage';
 
 function App() {
 
@@ -34,6 +35,8 @@ function App() {
         <Route path="/ReservoirProgressChart" element={<ReservoirProgressChart />} />
         <Route path="/StatsCards" element={<StatsCards />} />
         <Route path="/DrillingProgressChart" element={<DrillingProgressChart />} />
+          <Route path="/reports" element={<ReportsPage />} />
+
       </Routes>
 
     </div>

@@ -156,7 +156,7 @@ const NavBar = () => {
                                 cursor: "pointer",
                                 transition: "background 0.3s"
                             }}
-                            onClick={logOut}
+                            onClick={() => navigate("/signin")}
                             onMouseOver={(e) => e.target.style.backgroundColor = "#ADD8E6"}
                             onMouseOut={(e) => e.target.style.backgroundColor = "transparent"}
                         >

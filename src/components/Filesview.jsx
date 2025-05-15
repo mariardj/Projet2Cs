@@ -27,23 +27,7 @@ const Filesview = () => {
         >
        
 
-          <select
-            value={filterDate}
-            onChange={e => setFilterDate(e.target.value)}
-            style={{
-              padding: '8px 16px',
-              backgroundColor: '#FFF',
-              border: '2px solid #FF8500',
-              borderRadius: '30px',
-              color: '#FF8500',
-              cursor: 'pointer'
-            }}
-          >
-            <option value="">Filter Selon la Date</option>
-            <option>Today</option>
-            <option>Last 7 Days</option>
-            <option>Last 30 Days</option>
-          </select>
+         
         </div>
 
 
@@ -59,7 +43,7 @@ const Filesview = () => {
               key={idx}
               onClick={() => console.log(`Clicked ${fileItem.title}`)}
               style={{
-                background: '#FFF',
+              //  background: '#FFF',
                 borderRadius: '8px',
                 padding: '16px',
                 display: 'flex',

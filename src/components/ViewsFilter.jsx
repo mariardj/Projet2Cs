@@ -38,6 +38,10 @@ const ViewsFilter = ({ selectedView, onSelect }) => {
           position: relative;
           z-index: 10;
         }
+.views-list li:last-child {
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
 
         .filter-box {
           display: flex;

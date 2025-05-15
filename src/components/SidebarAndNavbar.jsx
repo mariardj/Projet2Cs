@@ -190,7 +190,7 @@ const SidebarAndNavbar = () => {
   <NavItem active={currentPath === "/settings"} onClick={() => navigate("/settings")}>
     Settings
   </NavItem>
-  <NavItem onClick={logOut}>
+  <NavItem onClick={() => navigate("/signin")}>
     Logout 
     <img 
       src={logout} 

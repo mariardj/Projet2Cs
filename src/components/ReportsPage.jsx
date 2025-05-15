@@ -4,9 +4,13 @@ import TableView from './TableView';
 import Dashboardsview from './Dashboardsview';
 import Filesview from './Filesview';
 import ViewsFilter from './ViewsFilter';
+import DateFilter from './DateFilter';
 
 const ReportsPage = () => {
   const [selectedView, setSelectedView] = useState('Table View');
+const [filterDate, setFilterDate] = useState('');
+
+
 
   const renderView = () => {
     switch (selectedView) {
@@ -36,8 +40,13 @@ const ReportsPage = () => {
     boxSizing: 'border-box'
   }}
 >
+<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
   <ViewsFilter selectedView={selectedView} onSelect={setSelectedView} />
-  {renderView()}
+  <DateFilter selectedDate={filterDate} onSelect={setFilterDate} />
+</div>
+{renderView()}
+
+  
 </div>
 
 
