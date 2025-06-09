@@ -1,5 +1,5 @@
 import React from "react";
-import CostStatusGauge from "./CostStatusGauge"; // We'll create this next
+import CostStatusGauge from "./CostStatusGauge";
 
 export default function CostStatusPage() {
   return (

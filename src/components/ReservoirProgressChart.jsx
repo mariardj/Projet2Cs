@@ -15,8 +15,8 @@ const data = [
 export default function ReservoirProgressChart() {
   return (
     <div style={{ background: "white", borderRadius: "10px", padding: "20px" }}>
-      <h2 style={{ marginBottom: "10px" }}>Progression des réservoirs atteints</h2>
-      <p style={{ color: "#000000", marginBottom: "20px" }}>Niveau de profondeur</p>
+      <h2 style={{ marginBottom: "10px" }}>Progress of Reached Reservoirs</h2>
+      <p style={{ color: "#000000", marginBottom: "20px" }}>Depth Level</p>
 
       {/* 
         Responsive chart container that adapts to parent size
