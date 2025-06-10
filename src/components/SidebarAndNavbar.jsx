@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect  } from 'react';
 import styled from "styled-components";
 import logo from "../assets/logo.svg";
 import profilePic from "../assets/profilePic.svg";
@@ -8,6 +8,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Arrow from './Arrow';
 import search from "../assets/search.svg"; 
 import RemarqueCard from './RemarqueCard';
+import axios from 'axios';
 const SearchContainer = styled.div`
   display: flex;
   align-items: center;
@@ -162,8 +163,41 @@ const SidebarAndNavbar = () => {
   const location = useLocation();
   const [dropDownIsOpen, setDropDownIsOpenState] = useState(false);
   const currentPath = location.pathname;
-  
+  const [userData, setUserData] = useState({
+  userName: "User name",
+  userEmail: "email@example.com",
+  fullName: "Nom Inconnu"
+});
+const [unreadCount, setUnreadCount] = useState(0);
+  useEffect(() => {
+  const storedUser = JSON.parse(localStorage.getItem("user"));
+  setUserData({
+    userName: storedUser?.registration_number || "User name",
+    userEmail: storedUser?.email || "email@example.com",
+    fullName: storedUser?.first_name || "Nom Inconnu"
+  });
+    fetchUnreadNotificationsCount();
+    
+    // Configurer l'actualisation périodique
+    const interval = setInterval(fetchUnreadNotificationsCount, 300000); // 5 minutes
+    
+    return () => clearInterval(interval);
+  }, []);
+    // Charger le nombre de notifications non lues
+    
 
+
+
+  const fetchUnreadNotificationsCount = async () => {
+    try {
+      const response = await axios.get('http://127.0.0.1:8000/myapp/public/notifications/', {
+        params: { filter: 'not_analysed' }
+      });
+      setUnreadCount(response.data.not_analysed_count || 0);
+    } catch (error) {
+      console.error("Erreur de chargement des notifications:", error);
+    }
+  };
 
   const handleClickEvent = () => {
     setDropDownIsOpenState(!dropDownIsOpen);

@@ -1,22 +1,55 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import SidebarAndNavbar from './SidebarAndNavbar';
 import dashboard from '../assets/dashboard.svg';
 
 // Sample files with varying titles and dates
-const baseFiles = [
-  { title: 'Spreadsheet.csv', date: '27 May 2020' },
-  { title: 'Report_annual.pdf', date: '30 May 2020' },
-  { title: 'Pitch_sales.ppt', date: '05 Jun 2020' },
-  { title: 'Presentations.doc', date: '10 Jun 2020' }
-];
-
 const Filesview = () => {
   const [view, setView] = useState('Files View');
   const [filterDate, setFilterDate] = useState('');
+  const [files, setFiles] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Generate list of 15 file objects with varying dates
-  const files = Array.from({ length: 15 }, (_, i) => baseFiles[i % baseFiles.length]);
+  // Fetch uploaded files from backend
+  useEffect(() => {
+    const fetchFiles = async () => {
+      try {
+        const response = await axios.get('http://127.0.0.1:8000/myapp/upload-fichier/');
+        console.log('Files API response:', response.data);
 
+        // On suppose que response.data est un tableau de fichiers
+        setFiles(response.data);
+      } catch (error) {
+        console.error('Error fetching files:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFiles();
+  }, []);
+
+  // Optionnel : filtrage par date
+  const filteredFiles = files.filter(file => {
+    if (!filterDate) return true;
+
+    const fileDate = new Date(file.date_upload);
+    const now = new Date();
+
+    if (filterDate === 'Today') {
+      return fileDate.toDateString() === now.toDateString();
+    } else if (filterDate === 'Last 7 Days') {
+      const sevenDaysAgo = new Date(now);
+      sevenDaysAgo.setDate(now.getDate() - 7);
+      return fileDate >= sevenDaysAgo;
+    } else if (filterDate === 'Last 30 Days') {
+      const thirtyDaysAgo = new Date(now);
+      thirtyDaysAgo.setDate(now.getDate() - 30);
+      return fileDate >= thirtyDaysAgo;
+    }
+
+    return true;
+  });
   return (
     <div style={{ backgroundColor: '#F6F4F2', minHeight: '100vh' }}>
     
@@ -49,7 +82,7 @@ const Filesview = () => {
           {files.map((fileItem, idx) => (
             <div
               key={idx}
-              onClick={() => console.log(`Clicked ${fileItem.title}`)}
+              onClick={() => console.log(`Clicked ${fileItem.url}`)}
               style={{
                 background: '#FFF',
                 borderRadius: '8px',
@@ -67,10 +100,10 @@ const Filesview = () => {
                 style={{ width: '40px', height: '40px' }}
               />
               <span style={{ marginTop: '10px', fontWeight: '500', fontSize: '14px', textAlign: 'center' }}>
-                {fileItem.title}
+                {fileItem.url}
               </span>
               <span style={{ marginTop: '4px', fontSize: '12px', color: '#666' }}>
-                {fileItem.date}
+                {fileItem.date_upload}
               </span>
             </div>
           ))}

@@ -1,185 +1,305 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import SidebarAndNavbar from './SidebarAndNavbar';
-
-// Sample notifications data
-const notifications = [
-  {
-    id: 1,
-    project: 'Région01 ForageX02 PhaseY',
-    message: 'Someone sent a report',
-    timestamp: 'about 13 hours ago',
-    status: 'pending',
-  },
-  {
-    id: 2,
-    project: 'Région01 ForageX02 PhaseY',
-    message: 'Someone sent a report',
-    timestamp: 'about 13 hours ago',
-    status: 'analysed',
-  },
-  {
-    id: 3,
-    project: 'Région01 ForageX02 PhaseY',
-    message: 'Someone sent a report',
-    timestamp: 'about 13 hours ago',
-    status: 'pending',
-  },
-  {
-    id: 4,
-    project: 'Région01 ForageX02 PhaseY',
-    message: 'Someone sent a report',
-    timestamp: 'about 13 hours ago',
-    status: 'analysed',
-  },
-  {
-    id: 5,
-    project: 'Région01 ForageX02 PhaseY',
-    message: 'Someone sent a report',
-    timestamp: 'about 13 hours ago',
-    status: 'pending',
-  },
-];
+import axios from 'axios';
 
 const Notifications = () => {
   const [activeTab, setActiveTab] = useState('ALL');
-
-  // Filter notifications based on the active tab
-  const filteredNotifications = notifications.filter((notification) => {
-    if (activeTab === 'ALL') return true;
-    if (activeTab === 'Analysed') return notification.status === 'analysed';
-    if (activeTab === 'Not analysed') return notification.status === 'pending';
-    return false;
+  const [notificationData, setNotificationData] = useState({
+    ALL: { Analysed: 0, 'Not analysed': 0 },
+    notifications: []
   });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  return (
-    <div style={{ backgroundColor: '#F6F4F2', minHeight: '100vh' }}>
+  const fetchNotifications = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get('http://127.0.0.1:8000/myapp/public/notifications/', {
+        params: { filter: activeTab.toLowerCase() }
+      });
+
+      // Vérification sécurisée de la structure de réponse
+      const data = response.data || {};
+      const results = data.results || [];
+      const analysedCount = data.analysed_count || 0;
+      const notAnalysedCount = data.not_analysed_count || 0;
+
+      setNotificationData({
+        ALL: {
+          Analysed: analysedCount,
+          'Not analysed': notAnalysedCount
+        },
+        notifications: results.map(item => ({
+          id: item.id || Date.now(), // Fallback ID
+          message: item.message || "Nouvelle notification",
+          time_ago: item.time_ago || "Récemment",
+          analysed: !!item.analysed,
+          forage_info: item.forage_info || "Non spécifié"
+        }))
+      });
+      
+      setError(null);
+    } catch (err) {
+      console.error('Erreur:', err);
+      setError(err.response?.data?.message || err.message || 'Erreur de chargement');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchNotifications();
+    const interval = setInterval(fetchNotifications, 300000); // Actualisation toutes 5 minutes
+    return () => clearInterval(interval);
+  }, [activeTab]);
+
+  const handleAnalyse = async (notificationId) => {
+  try {
+    await axios.post('http://127.0.0.1:8000/myapp/public/notifications/mark_analysed/', {
+      notification_id: notificationId
+    });
+    
+    setNotificationData(prev => {
+      const updatedNotifications = prev.notifications.map(n => 
+        n.id === notificationId ? { ...n, analysed: true } : n
+      );
+      
+      return {
+        ...prev,
+        notifications: updatedNotifications,
+        ALL: {
+          'Not analysed': updatedNotifications.filter(n => !n.analysed).length,
+          'Analysed': updatedNotifications.filter(n => n.analysed).length
+        }
+      };
+    });
+    
+  } catch (err) {
+    console.error("Erreur d'analyse:", err);
+    alert(`Erreur: ${err.response?.data?.message || err.message}`);
+  }
+};
+
+  const handleManualRefresh = () => {
+    fetchNotifications();
+  };
+
+  if (loading) return (
+    <div style={styles.container}>
       <SidebarAndNavbar />
+      <div style={styles.content}>
+        <h1 style={styles.title}>Notifications</h1>
+        <p>Chargement en cours...</p>
+      </div>
+    </div>
+  );
 
-      {/* Ensure content starts below navbar and beside sidebar */}
-      <div
-        style={{
-          marginLeft: '240px', // adjust based on sidebar width
-          paddingTop: '120px', // increased to clear navbar
-          paddingLeft: '20px',
-          paddingRight: '20px',
-        }}
-      >
-        <h1 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '20px' }}>
-          Notifications
-        </h1>
-
-        {/* Tab navigation */}
-        <div
-          style={{
-            display: 'flex',
-            gap: '20px',
-            marginBottom: '20px',
-            borderBottom: '1px solid #E0E0E0',
-          }}
-        >
-          <span
-            onClick={() => setActiveTab('ALL')}
-            style={{
-              cursor: 'pointer',
-              borderBottom: activeTab === 'ALL' ? '2px solid #FF8500' : 'none',
-              paddingBottom: '5px',
-              color: activeTab === 'ALL' ? '#FF8500' : '#666',
-            }}
-          >
-            ALL
-          </span>
-          <span
-            onClick={() => setActiveTab('Analysed')}
-            style={{
-              cursor: 'pointer',
-              borderBottom: activeTab === 'Analysed' ? '2px solid #FF8500' : 'none',
-              paddingBottom: '5px',
-              color: activeTab === 'Analysed' ? '#FF8500' : '#666',
-            }}
-          >
-            Analysed
-          </span>
-          <span
-            onClick={() => setActiveTab('Not analysed')}
-            style={{
-              cursor: 'pointer',
-              borderBottom: activeTab === 'Not analysed' ? '2px solid #FF8500' : 'none',
-              paddingBottom: '5px',
-              color: activeTab === 'Not analysed' ? '#FF8500' : '#666',
-            }}
-          >
-            Not analysed
-          </span>
-        </div>
-
-        {/* Notifications list */}
-        <div>
-          {filteredNotifications.map((notification) => (
-            <div
-              key={notification.id}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                padding: '10px 0',
-                borderBottom: '1px solid #E0E0E0',
-              }}
-            >
-              {/* Bullet point and project name */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <span style={{ color: '#FF8500', fontSize: '18px' }}>•</span>
-                <span style={{ fontWeight: 'bold' }}>{notification.project}</span>
-              </div>
-
-              {/* Avatar, message, and timestamp */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <div
-                  style={{
-                    width: '20px',
-                    height: '20px',
-                    borderRadius: '50%',
-                    backgroundColor: '#FF8500',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <span style={{ color: '#FFF', fontSize: '12px' }}>P</span>
-                </div>
-                <span style={{ fontSize: '14px' }}>
-                  {notification.message} • {notification.timestamp}
-                </span>
-              </div>
-
-              {/* Action button */}
-              <button
-                style={{
-                  padding: '8px 16px',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  ...(
-                    notification.status === 'pending'
-                      ? {
-                          backgroundColor: '#FF8500',
-                          color: '#FFF',
-                        }
-                      : {
-                          backgroundColor: '#FFF',
-                          color: '#FF8500',
-                          border: '2px solid #FF8500',
-                        }
-                  ),
-                }}
-              >
-                {notification.status === 'pending' ? 'Analyse it' : 'Analysed'}
-              </button>
-            </div>
-          ))}
+  if (error) return (
+    <div style={styles.container}>
+      <SidebarAndNavbar />
+      <div style={styles.content}>
+        <h1 style={styles.title}>Notifications</h1>
+        <div style={styles.errorBox}>
+          Erreur: {error}
         </div>
       </div>
     </div>
   );
+
+  return (
+    <div style={styles.container}>
+      <SidebarAndNavbar />
+      <div style={styles.content}>
+        <h1 style={styles.title}>Notifications</h1>
+
+        {/* Onglets de filtrage */}
+        <div style={styles.tabsContainer}>
+          {['ALL', 'Analysed', 'Not analysed'].map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              style={{
+                ...styles.tabButton,
+                ...(activeTab === tab && styles.activeTab)
+              }}
+            >
+              {tab === 'ALL' ? 'TOUTES' : tab.toUpperCase()}
+              {tab === 'ALL' ? 
+                notificationData.notifications.length :
+              tab === 'Analysed' ? 
+                notificationData.notifications.filter(n => n.analysed).length :
+                notificationData.notifications.filter(n => !n.analysed).length}
+            </button>
+          ))}
+        </div>
+
+        {/* Liste des notifications */}
+        <div style={styles.notificationsContainer}>
+          {notificationData.notifications.length > 0 ? (
+            notificationData.notifications.map((notification) => (
+              <div key={notification.id} style={styles.notificationItem}>
+                <div style={styles.notificationContent}>
+                  <div style={{
+                    ...styles.statusIndicator,
+                    backgroundColor: notification.analysed ? '#4CAF50' : '#FF8500'
+                  }} />
+                  <div>
+                    <div style={styles.notificationMessage}>{notification.message}</div>
+                    <div style={styles.notificationMeta}>
+                      {notification.forage_info} • {notification.time_ago}
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => handleAnalyse(notification.id)}
+                  disabled={notification.analysed}
+                  style={{
+                    ...styles.analyseButton,
+                    ...(notification.analysed && styles.analysedButton)
+                  }}
+                >
+                  {notification.analysed ? (
+                    <>
+                      <span style={styles.checkIcon}>✓</span> Analysé
+                    </>
+                  ) : (
+                    'Analyser'
+                  )}
+                </button>
+              </div>
+            ))
+          ) : (
+            <div style={styles.emptyState}>
+              Aucune notification disponible
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const styles = {
+  container: {
+    backgroundColor: '#F6F4F2',
+    minHeight: '100vh',
+    display: 'flex'
+  },
+  content: {
+    marginLeft: '240px',
+    paddingTop: '120px',
+    padding: '20px',
+    width: 'calc(100% - 240px)',
+    maxWidth: '1200px'
+  },
+  title: {
+    fontSize: '24px',
+    fontWeight: 'bold',
+    marginBottom: '20px',
+    color: '#333'
+  },
+  errorBox: {
+    color: '#D32F2F',
+    backgroundColor: '#FFEBEE',
+    padding: '15px',
+    borderRadius: '4px',
+    marginBottom: '20px'
+  },
+  tabsContainer: {
+    display: 'flex',
+    gap: '20px',
+    marginBottom: '20px',
+    borderBottom: '1px solid #E0E0E0',
+    paddingBottom: '10px'
+  },
+  tabButton: {
+    background: 'none',
+    border: 'none',
+    borderBottom: '2px solid transparent',
+    color: '#666',
+    padding: '5px 10px',
+    cursor: 'pointer',
+    fontWeight: 'normal',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    fontSize: '14px',
+    outline: 'none'
+  },
+  activeTab: {
+    color: '#FF8500',
+    fontWeight: 'bold',
+    borderBottomColor: '#FF8500'
+  },
+  tabCount: {
+    backgroundColor: '#E0E0E0',
+    color: '#666',
+    borderRadius: '10px',
+    padding: '2px 8px',
+    fontSize: '12px'
+  },
+  notificationsContainer: {
+    backgroundColor: 'white',
+    borderRadius: '8px',
+    padding: '20px',
+    boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
+  },
+  notificationItem: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '12px 0',
+    borderBottom: '1px solid #f5f5f5'
+  },
+  notificationContent: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+    flex: 1
+  },
+  statusIndicator: {
+    width: '10px',
+    height: '10px',
+    borderRadius: '50%',
+    flexShrink: 0
+  },
+  notificationMessage: {
+    fontWeight: '500',
+    color: '#333'
+  },
+  notificationMeta: {
+    fontSize: '13px',
+    color: '#666',
+    marginTop: '4px'
+  },
+  analyseButton: {
+    padding: '8px 16px',
+    backgroundColor: '#FF8500',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    fontWeight: 'bold',
+    fontSize: '14px',
+    minWidth: '100px',
+    transition: 'all 0.2s ease'
+  },
+  analysedButton: {
+    backgroundColor: 'transparent',
+    color: '#4CAF50',
+    border: '1px solid #4CAF50',
+    cursor: 'default'
+  },
+  checkIcon: {
+    marginRight: '5px'
+  },
+  emptyState: {
+    textAlign: 'center',
+    padding: '40px 20px',
+    color: '#666',
+    fontSize: '16px'
+  }
 };
 
 export default Notifications;

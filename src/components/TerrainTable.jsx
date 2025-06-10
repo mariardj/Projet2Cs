@@ -1,32 +1,36 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+import axios from 'axios';
 
-const TerrainTable = () => {
-  const newsData = [
-    { id: '1998498', title: 'Noida Bank Employee Booked For...', date: '12-Jan-2024 | 08:53 am', addedBy: 'Admin' },
-    { id: '1998499', title: 'Dunki Release LIVE Updates: SRK...', date: '13-Jan-2024 | 09:33 am', addedBy: 'Editor' },
-    { id: '19984100', title: 'There\'s A Message in The Suspension...', date: '14-Jan-2024 | 08:30 am', addedBy: 'Reporter' },
-    { id: '1998495', title: 'Noida Bank Employee Booked For...', date: '12-Jan-2024 | 08:53 am', addedBy: 'Admin' },
-    { id: '1998494', title: 'Dunki Release LIVE Updates: SRK...', date: '13-Jan-2024 | 09:33 am', addedBy: 'Editor' },
-    { id: '19984103', title: 'There\'s A Message in The Suspension...', date: '14-Jan-2024 | 08:30 am', addedBy: 'Reporter' },
-    { id: '1998498', title: 'Noida Bank Employee Booked For...', date: '12-Jan-2024 | 08:53 am', addedBy: 'Admin' },
-    { id: '1998499', title: 'Dunki Release LIVE Updates: SRK...', date: '13-Jan-2024 | 09:33 am', addedBy: 'Editor' },
-    { id: '19984100', title: 'There\'s A Message in The Suspension...', date: '14-Jan-2024 | 08:30 am', addedBy: 'Reporter' },
-    { id: '1998495', title: 'Noida Bank Employee Booked For...', date: '12-Jan-2024 | 08:53 am', addedBy: 'Admin' },
-    { id: '1998494', title: 'Dunki Release LIVE Updates: SRK...', date: '13-Jan-2024 | 09:33 am', addedBy: 'Editor' },
-    { id: '19984103', title: 'There\'s A Message in The Suspension...', date: '14-Jan-2024 | 08:30 am', addedBy: 'Reporter' },
-  ];
-
-  const itemsPerPage = 7;
+const TerrainTable = () => {  const [newsData, setNewsData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
+
+  const itemsPerPage = 7;
+
+  useEffect(() => {
+    axios.get('http://127.0.0.1:8000/myapp/upload-fichier/')
+      .then(response => {
+        // Adapter les données reçues à ton tableau
+        const transformedData = response.data.map(item => ({
+          id: item.id_rapport_imported,
+          title: item.url,
+          date: item.date_upload,
+          addedBy: item.user_info?.registration_number,
+        }));
+        setNewsData(transformedData);
+      })
+      .catch(error => {
+        console.error('Erreur lors du chargement des données :', error);
+      });
+  }, []);
 
   const sortedData = useMemo(() => {
     let sortableData = [...newsData];
     if (sortConfig.key !== null) {
       sortableData.sort((a, b) => {
         if (sortConfig.key === 'date') {
-          const dateA = new Date(a.date.split(' | ')[0].split('-').reverse().join('-'));
-          const dateB = new Date(b.date.split(' | ')[0].split('-').reverse().join('-'));
+          const dateA = new Date(a.date);
+          const dateB = new Date(b.date);
           return sortConfig.direction === 'ascending' ? dateA - dateB : dateB - dateA;
         }
         if (a[sortConfig.key] < b[sortConfig.key]) return sortConfig.direction === 'ascending' ? -1 : 1;
@@ -49,14 +53,14 @@ const TerrainTable = () => {
     setSortConfig({ key, direction });
     setCurrentPage(1);
   };
-    
+
   const headerStyle = {
     cursor: 'pointer',
     userSelect: 'none',
     display: 'flex',
-    justifyContent: 'flex-start',  // Changer ici
+    justifyContent: 'flex-start',
     alignItems: 'center',
-    gap: '5px'  // Ajouter un petit espace entre le titre et la flèche
+    gap: '5px'
   };
 
   const SortIcon = ({ direction }) => (
@@ -68,7 +72,6 @@ const TerrainTable = () => {
   const goToPage = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
-
   return (
     <div style={{ fontFamily: 'Arial, sans-serif', maxWidth: '1200px', margin: '0 auto', padding: '20px', backgroundColor: '#fff' }}>
       <h2 style={{ textAlign: 'center', marginBottom: '20px', color: '#333' }}>

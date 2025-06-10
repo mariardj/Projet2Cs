@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import NavBar from "./NavBar";
 import mic from '../assets/mic.svg';
 import excel from '../assets/excel.svg';
 import SidebarAndNavbar from './SidebarAndNavbar';
+import axios from 'axios';
 
 // Data Models
 class Rapport {
@@ -27,17 +28,43 @@ class Remarque {
   }
 }
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000/myapp';
+const API_ENDPOINTS = {
+  UPLOAD_REPORT: `${API_BASE_URL}/upload-fichier/`,
+};
+
+
 const Home = () => {
   const [excelFile, setExcelFile] = useState(null);
   const [fileName, setFileName] = useState('');
   const [isDragging, setIsDragging] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState(null);
   const [remark, setRemark] = useState({
     title: '',
-    priority: 'Medium',
+    priority: 'MOYENNE',
     observation: '',
     solution: ''
   });
+    // Reset state after successful submission
+const [userData, setUserData] = useState({
+      userName: "User name",
+      userEmail: "email@example.com",
+      fullName: "Nom Inconnu",
+      userId: null
+    });
+      useEffect(() => {
+      const storedUser = JSON.parse(localStorage.getItem("user"));
+      setUserData({
+        userName: storedUser?.registration_number || "User name",
+        userEmail: storedUser?.email || "email@example.com",
+        fullName: storedUser?.nom || "Nom Inconnu",
+        userId: storedUser?.id || null
+      });
+    }, []);
+
 
   // File handling
   const handleFileChange = e => {
@@ -72,35 +99,52 @@ const Home = () => {
     setRemark(r => ({ ...r, [name]: value }));
   };
 
-  // Submission handling
-  const handleSubmit = () => {
-    try {
-      const newRapport = new Rapport();
-      const newRemarque = new Remarque(newRapport.idrapport);
-      Object.assign(newRemarque, remark);
+    // Submission handling
+const handleSubmit = async () => {
+  if (!excelFile || !remark.observation) {
+    alert('Please upload a file and provide observations');
+    return;
+  }
 
-      const submissionData = {
-        rapport: { ...newRapport },
-        remarque: newRemarque,
-        excelFile
-      };
+  try {
+    setIsSubmitting(true);
+    setSubmitError(null);
 
-      console.log('Submission Data:', submissionData);
-      alert('Data ready for backend submission!');
-      
-    } catch (error) {
-      console.error('Submission Error:', error);
-      alert('Error formatting data!');
+    const formData = new FormData();
+    formData.append('url', excelFile);
+    formData.append('priority_remarque', remark.priority);
+    formData.append('title', remark.title);
+    formData.append('observation_remarque', remark.observation);
+    formData.append('user', userData.userId.toString());  // Ensure it's a string
+    formData.append('solution_remarque', remark.solution || '');
+
+    // Debug what's being sent
+    for (let [key, value] of formData.entries()) {
+      console.log(key, value);
     }
-  };
 
+    const response = await axios.post(API_ENDPOINTS.UPLOAD_REPORT, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    console.log('Success:', response.data);
+    setSubmitSuccess(true);
+  } catch (error) {
+    console.error('Error:', error.response?.data);
+    setSubmitError(error.response?.data || 'Submission failed');
+  } finally {
+    setIsSubmitting(false);
+  }
+};
   const handleCancel = () => {
     setExcelFile(null);
     setFileName('');
-    setRemark({ title: '', priority: 'Medium', observation: '', solution: '' });
+    setRemark({ title: '', priority: 'MOYENNE', observation: '', solution: '', id_user: ''});
     setIsModalOpen(false);
+    setSubmitError(null);
   };
-
   return (
     <div style={{ backgroundColor: '#F6F4F2', minHeight: '100vh' }}>
       <NavBar />

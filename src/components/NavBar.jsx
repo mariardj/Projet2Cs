@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState ,useEffect} from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.svg';
 import profilePic from '../assets/profilePic.svg';
@@ -8,6 +8,19 @@ const NavBar = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const [dropDownIsOpen, setDropDownIsOpenState] = useState(false);
+        const [userData, setUserData] = useState({
+      userName: "User name",
+      userEmail: "email@example.com",
+      fullName: "Nom Inconnu"
+    });
+      useEffect(() => {
+      const storedUser = JSON.parse(localStorage.getItem("user"));
+      setUserData({
+        userName: storedUser?.registration_number || "User name",
+        userEmail: storedUser?.email || "email@example.com",
+        fullName: storedUser?.nom || "Nom Inconnu"
+      });
+    }, []);
 
     const handleClickEvent = () => {
         setDropDownIsOpenState(!dropDownIsOpen);
