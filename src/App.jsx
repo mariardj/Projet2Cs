@@ -20,7 +20,7 @@ function App() {
         <Route path="/Notifications" element={<Notifications />} />
        
 
-        <Route path="/Dashboard" element={<Dashboard />} />
+        <Route path="/Dashboard" element={<Dashboard idForage={71}/>} />
              <Route path="/reports" element={<ReportsPage />} />
       </Routes>
 
