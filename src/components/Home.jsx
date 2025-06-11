@@ -44,7 +44,7 @@ const Home = () => {
   const [submitError, setSubmitError] = useState(null);
   const [remark, setRemark] = useState({
     title: '',
-    priority: 'MOYENNE',
+    priority: 'MEDIUM',
     observation: '',
     solution: ''
   });
@@ -131,9 +131,17 @@ const handleSubmit = async () => {
 
     console.log('Success:', response.data);
     setSubmitSuccess(true);
+    setTimeout(() => {
+  setSubmitSuccess(false);
+}, 3000);
+
   } catch (error) {
     console.error('Error:', error.response?.data);
     setSubmitError(error.response?.data || 'Submission failed');
+setTimeout(() => {
+  setSubmitError(null);
+}, 3000);
+
   } finally {
     setIsSubmitting(false);
   }
@@ -141,7 +149,7 @@ const handleSubmit = async () => {
   const handleCancel = () => {
     setExcelFile(null);
     setFileName('');
-    setRemark({ title: '', priority: 'MOYENNE', observation: '', solution: '', id_user: ''});
+    setRemark({ title: '', priority: 'MEDIUM', observation: 'Test observation', solution: '', id_user: ''});
     setIsModalOpen(false);
     setSubmitError(null);
   };
@@ -210,9 +218,36 @@ const handleSubmit = async () => {
             <button onClick={handleSubmit} style={{ backgroundColor: '#FF8500', color: 'white', border: 'none', padding: '10px 30px', borderRadius: 20, fontSize: 14, cursor: 'pointer' }}>
               Submit
             </button>
+            {submitSuccess && (
+  <div style={{
+    position: 'fixed',
+    bottom: '20px',
+    left: '50%',
+    transform: 'translateX(-50%)',
+    backgroundColor: '#e6ffed',
+    color: '#2e7d32',
+    padding: '16px 24px',
+    borderRadius: '8px',
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+    zIndex: 1000,
+    textAlign: 'center',
+    fontWeight: 'bold'
+  }}>
+    ✅ File imported successfully !
+  </div>
+
+)}
+{submitError && (
+  <div style={{ color: 'red', textAlign: 'center', marginTop: 10 }}>
+    ❌ Erreur lors de l'envoi : {submitError}
+  </div>
+)}
+
           </div>
         )}
+        
       </div>
+      
 
       {/* Remark Modal */}
       {isModalOpen && (

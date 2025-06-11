@@ -115,7 +115,7 @@ const TerrainTable = () => {  const [newsData, setNewsData] = useState([]);
           }}
         >
           <div style={{ color: '#666', fontWeight: '500' }}>{item.id}</div>
-          <div style={{ fontWeight: '600' }}>{item.title}</div>
+          <div style={{ fontWeight: '600' }}>{item.title.split('/').pop()}</div>
           <div style={{ color: '#555', fontSize: '0.9em' }}>{item.date}</div>
           <div style={{ color: '#444', fontStyle: 'italic' }}>{item.addedBy}</div>
         </div>
