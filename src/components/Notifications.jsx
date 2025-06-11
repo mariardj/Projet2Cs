@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import SidebarAndNavbar from './SidebarAndNavbar';
 import axios from 'axios';
 
+
 const Notifications = () => {
   const [activeTab, setActiveTab] = useState('ALL');
   const [notificationData, setNotificationData] = useState({
@@ -27,7 +28,7 @@ const Notifications = () => {
       setNotificationData({
         ALL: {
           Analysed: analysedCount,
-          'Not analysed': notAnalysedCount
+          NotAalysed: notAnalysedCount
         },
         notifications: results.map(item => ({
           id: item.id || Date.now(), // Fallback ID
@@ -76,7 +77,6 @@ const Notifications = () => {
     
   } catch (err) {
     console.error("Erreur d'analyse:", err);
-    alert(`Erreur: ${err.response?.data?.message || err.message}`);
   }
 };
 
@@ -84,7 +84,7 @@ const Notifications = () => {
     fetchNotifications();
   };
 
-  if (loading) return (
+if (loading) return (
     <div style={styles.container}>
       <SidebarAndNavbar />
       <div style={styles.content}>
@@ -123,7 +123,7 @@ const Notifications = () => {
                 ...(activeTab === tab && styles.activeTab)
               }}
             >
-              {tab === 'ALL' ? 'TOUTES' : tab.toUpperCase()}
+              {tab === 'ALL' ? 'ALL ' : tab.toUpperCase()}
               {tab === 'ALL' ? 
                 notificationData.notifications.length :
               tab === 'Analysed' ? 
@@ -136,7 +136,14 @@ const Notifications = () => {
         {/* Liste des notifications */}
         <div style={styles.notificationsContainer}>
           {notificationData.notifications.length > 0 ? (
-            notificationData.notifications.map((notification) => (
+            notificationData.notifications
+  .filter((notification) => {
+    if (activeTab === 'Analysed') return notification.analysed;
+    if (activeTab === 'Not analysed') return !notification.analysed;
+    return true; // 'ALL'
+  })
+  .map((notification) => (
+
               <div key={notification.id} style={styles.notificationItem}>
                 <div style={styles.notificationContent}>
                   <div style={{
@@ -299,7 +306,39 @@ const styles = {
     padding: '40px 20px',
     color: '#666',
     fontSize: '16px'
-  }
+  },
+  notificationWrapper: {
+  position: 'relative',
+  display: 'inline-block',
+  marginRight: '20px',
+},
+
+iconAndText: {
+  display: 'flex',
+  alignItems: 'center',
+  gap: '5px',
+  color: 'orange',
+  fontSize: '16px',
+},
+
+notificationText: {
+  fontWeight: 'bold',
+},
+
+badge: {
+  position: 'absolute',
+  top: '-5px',
+  right: '-10px',
+  backgroundColor: 'red',
+  color: 'white',
+  borderRadius: '50%',
+  padding: '2px 6px',
+  fontSize: '12px',
+  fontWeight: 'bold',
+  minWidth: '20px',
+  textAlign: 'center',
+},
+
 };
 
 export default Notifications;

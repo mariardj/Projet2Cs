@@ -1,36 +1,62 @@
-import React, { useState } from 'react';
+ import React, { useState, useEffect } from 'react';
+ import axios from 'axios';
 
 import file2 from '../assets/file2.svg';
 import dash from '../assets/dash.svg';
 
-const TableView = () => {
-  const tableData = [
-    { id: '19984108', title: 'Tata Harrier and Safari Secure...', date: '17-Jan-2024 | 09:45 am', region: 'Tata Harrier' },
-    { id: '19984109', title: 'Paying tribute to democracy...', date: '17-Jan-2024 | 09:50 am', region: 'Tribute' },
-    { id: '19984110', title: "Congress's 'Ram Ram' to Ayodhya...", date: '18-Jan-2024 | 12:46 pm', region: 'Congress' },
-    { id: '19984111', title: 'India-Maldives row: Tour packages...', date: '16-Jan-2024 | 03:45 pm', region: 'India-Maldives' },
-    { id: '19984112', title: 'CM Yogi says 100 chartered planes...', date: '17-Jan-2024 | 09:45 am', region: 'CM Yogi' },
-    { id: '19984113', title: 'Now 28, youngest eyewitness in...', date: '17-Jan-2024 | 09:50 am', region: 'Eyewitness' },
-    { id: '19984114', title: 'Bengaluru startup CEO Suhana...', date: '18-Jan-2024 | 12:46 pm', region: 'Startup' },
-    { id: '19984109', title: 'Paying tribute to democracy...', date: '17-Jan-2024 | 09:50 am', region: 'Tribute' },
-    { id: '19984110', title: "Congress's 'Ram Ram' to Ayodhya...", date: '18-Jan-2024 | 12:46 pm', region: 'Congress' },
-    { id: '19984111', title: 'India-Maldives row: Tour packages...', date: '16-Jan-2024 | 03:45 pm', region: 'India-Maldives' },
-    { id: '19984112', title: 'CM Yogi says 100 chartered planes...', date: '17-Jan-2024 | 09:45 am', region: 'CM Yogi' },
-    { id: '19984113', title: 'Now 28, youngest eyewitness in...', date: '17-Jan-2024 | 09:50 am', region: 'Eyewitness' },
-    { id: '19984114', title: 'Bengaluru startup CEO Suhana...', date: '18-Jan-2024 | 12:46 pm', region: 'Startup' },
-    { id: '19984109', title: 'Paying tribute to democracy...', date: '17-Jan-2024 | 09:50 am', region: 'Tribute' },
-    { id: '19984110', title: "Congress's 'Ram Ram' to Ayodhya...", date: '18-Jan-2024 | 12:46 pm', region: 'Congress' },
-    { id: '19984111', title: 'India-Maldives row: Tour packages...', date: '16-Jan-2024 | 03:45 pm', region: 'India-Maldives' },
-    { id: '19984112', title: 'CM Yogi says 100 chartered planes...', date: '17-Jan-2024 | 09:45 am', region: 'CM Yogi' },
-    { id: '19984113', title: 'Now 28, youngest eyewitness in...', date: '17-Jan-2024 | 09:50 am', region: 'Eyewitness' },
-    { id: '19984114', title: 'Bengaluru startup CEO Suhana...', date: '18-Jan-2024 | 12:46 pm', region: 'Startup' },
-  ];
+const TableView = ({ filterDate }) => {
 
+
+   const [view, setView] = useState('Files View');
+   
+   const [files, setFiles] = useState([]);
+   const [loading, setLoading] = useState(true);
+ 
+   // Fetch uploaded files from backend
+   useEffect(() => {
+     const fetchFiles = async () => {
+       try {
+         const response = await axios.get('http://127.0.0.1:8000/myapp/upload-fichier/');
+         console.log('Files API response:', response.data);
+ 
+         // On suppose que response.data est un tableau de fichiers
+         setFiles(response.data);
+       } catch (error) {
+         console.error('Error fetching files:', error);
+       } finally {
+         setLoading(false);
+       }
+     };
+ 
+     fetchFiles();
+   }, []);
+ 
+   // Optionnel : filtrage par date
+   const filteredFiles = files.filter(file => {
+     if (!filterDate) return true;
+ 
+     const fileDate = new Date(file.date_upload);
+     const now = new Date();
+ 
+     if (filterDate === 'Today') {
+       return fileDate.toDateString() === now.toDateString();
+     } else if (filterDate === 'Last 7 Days') {
+       const sevenDaysAgo = new Date(now);
+       sevenDaysAgo.setDate(now.getDate() - 7);
+       return fileDate >= sevenDaysAgo;
+     } else if (filterDate === 'Last 30 Days') {
+       const thirtyDaysAgo = new Date(now);
+       thirtyDaysAgo.setDate(now.getDate() - 30);
+       return fileDate >= thirtyDaysAgo;
+     }
+ 
+     return true;
+   });
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 7;
 
-  const sortedData = [...tableData].sort((a, b) => {
+  const sortedData = [...filteredFiles].sort((a, b) => {
     if (!sortConfig.key) return 0;
     let aValue = a[sortConfig.key];
     let bValue = b[sortConfig.key];
@@ -52,7 +78,7 @@ const TableView = () => {
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
   const currentRows = sortedData.slice(indexOfFirstRow, indexOfLastRow);
 
-  const totalPages = Math.ceil(tableData.length / rowsPerPage);
+  const totalPages = Math.ceil(filteredFiles.length / rowsPerPage);
 
   const requestSort = (key) => {
     let direction = 'ascending';
@@ -171,9 +197,9 @@ const TableView = () => {
         <tbody>
           {currentRows.map((row, index) => (
             <tr key={index}>
-              <td style={styles.td}>{row.id}</td>
-              <td style={styles.td}>{row.title}</td>
-              <td style={styles.td}>{row.date}</td>
+              <td style={styles.td}>{row.id_rapport_imported}</td>
+              <td style={styles.td}>{row.url.split('/').pop()}</td>
+              <td style={styles.td}>{row.date_upload}</td>
               <td style={styles.td}>{row.region}</td>
               <td style={styles.td}><img src={dash} style={styles.dash} alt="dashboard" /></td>
               <td style={styles.td}><img src={file2} style={styles.file2} alt="file" /></td>

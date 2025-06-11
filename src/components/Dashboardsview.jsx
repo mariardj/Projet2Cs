@@ -4,9 +4,8 @@ import SidebarAndNavbar from './SidebarAndNavbar';
 import dashboard from '../assets/dashboard.svg';
 
 // Sample files with varying titles and dates
-const Filesview = () => {
+const Filesview = ({ filterDate }) => {
   const [view, setView] = useState('Files View');
-  const [filterDate, setFilterDate] = useState('');
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -29,21 +28,21 @@ const Filesview = () => {
     fetchFiles();
   }, []);
 
-  // Optionnel : filtrage par date
+    // Filtrage par date
   const filteredFiles = files.filter(file => {
     if (!filterDate) return true;
 
-    const fileDate = new Date(file.date_upload);
+    const fileDate = new Date(file.date_upload + 'T00:00:00'); // assure un bon parsing
     const now = new Date();
 
     if (filterDate === 'Today') {
       return fileDate.toDateString() === now.toDateString();
     } else if (filterDate === 'Last 7 Days') {
-      const sevenDaysAgo = new Date(now);
+      const sevenDaysAgo = new Date();
       sevenDaysAgo.setDate(now.getDate() - 7);
       return fileDate >= sevenDaysAgo;
     } else if (filterDate === 'Last 30 Days') {
-      const thirtyDaysAgo = new Date(now);
+      const thirtyDaysAgo = new Date();
       thirtyDaysAgo.setDate(now.getDate() - 30);
       return fileDate >= thirtyDaysAgo;
     }
@@ -79,7 +78,7 @@ const Filesview = () => {
             gap: '20px'
           }}
         >
-          {files.map((fileItem, idx) => (
+          {filteredFiles.map((fileItem, idx) => (
             <div
               key={idx}
               onClick={() => console.log(`Clicked ${fileItem.url}`)}
@@ -100,7 +99,8 @@ const Filesview = () => {
                 style={{ width: '40px', height: '40px' }}
               />
               <span style={{ marginTop: '10px', fontWeight: '500', fontSize: '14px', textAlign: 'center' }}>
-                {fileItem.url}
+                {fileItem.url.split('/').pop()}
+
               </span>
               <span style={{ marginTop: '4px', fontSize: '12px', color: '#666' }}>
                 {fileItem.date_upload}

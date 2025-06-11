@@ -101,8 +101,8 @@ const [userData, setUserData] = useState({
 
     // Submission handling
 const handleSubmit = async () => {
-  if (!excelFile || !remark.observation) {
-    alert('Please upload a file and provide observations');
+  if (!excelFile ) {
+    alert('Please upload a file ');
     return;
   }
 

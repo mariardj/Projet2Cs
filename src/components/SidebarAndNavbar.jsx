@@ -62,6 +62,8 @@ const NotificationItem = styled.span`
   }
 `;
 
+
+
 const SidebarContainer = styled.nav`
   position: fixed;
   left: 0;
@@ -260,6 +262,21 @@ const [unreadCount, setUnreadCount] = useState(0);
     <img src={notif} alt="notif" width="24px" />
     Notifications
   </NotificationItem>
+  {unreadCount > 0 && (
+      <span style={{
+        position: 'absolute',
+        top: '22px', // Ajuste selon la taille de ton icône
+        right: '380px',
+        backgroundColor: 'red',
+        color: 'white',
+        borderRadius: '50%',
+        padding: '1px 5px',
+        fontSize: '12px'
+      }}>
+        {unreadCount}
+      </span>
+    )}
+
             
         
 
@@ -287,7 +304,7 @@ const [unreadCount, setUnreadCount] = useState(0);
                                gap: "4px"
                            }}>
                                <img src={profilePic} alt="profile" style={{ borderRadius: "50%", width: "36px" }} />
-                               User name
+                               {userData.userName}
                                <Arrow state={dropDownIsOpen} fill="#FF8500" style={{ height: "8px" }} />
                            </div>
                        </button>
@@ -316,8 +333,8 @@ const [unreadCount, setUnreadCount] = useState(0);
                                    }}>
                                        <img src={profilePic} alt="profile" style={{ borderRadius: "50%", width: "56px", height: "56px" }} />
                                        <div>
-                                           <p style={{ fontSize: "16px", fontWeight: "bold", color: "black", margin: 0 }}>User name</p>
-                                           <p style={{ fontSize: "14px", margin: 0 }}>loremIpsum@gmail.com</p>
+                                           <p style={{ fontSize: "16px", fontWeight: "bold", color: "black", margin: 0 }}>{userData.userName}</p>
+                                           <p style={{ fontSize: "14px", margin: 0 }}>{userData.userEmail}</p>
                                        </div>
                                    </li>
                                    <li 

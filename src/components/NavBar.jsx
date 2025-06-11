@@ -9,14 +9,14 @@ const NavBar = () => {
     const location = useLocation();
     const [dropDownIsOpen, setDropDownIsOpenState] = useState(false);
         const [userData, setUserData] = useState({
-      userName: "User name",
+      userName: "ahlem name",
       userEmail: "email@example.com",
       fullName: "Nom Inconnu"
     });
       useEffect(() => {
       const storedUser = JSON.parse(localStorage.getItem("user"));
       setUserData({
-        userName: storedUser?.registration_number || "User name",
+        userName: storedUser?.registration_number || "ahlem name",
         userEmail: storedUser?.email || "email@example.com",
         fullName: storedUser?.nom || "Nom Inconnu"
       });
@@ -129,7 +129,7 @@ const NavBar = () => {
                     gap: "4px"
                 }}>
                     <img src={profilePic} alt="profile" style={{ borderRadius: "50%", width: "36px" }} />
-                    User name
+                    {userData.userName}
                     <Arrow state={dropDownIsOpen} fill="#FF8500" style={{ height: "8px" }} />
                 </div>
             </button>
@@ -158,8 +158,8 @@ const NavBar = () => {
                         }}>
                             <img src={profilePic} alt="profile" style={{ borderRadius: "50%", width: "56px", height: "56px" }} />
                             <div>
-                                <p style={{ fontSize: "16px", fontWeight: "bold", color: "black", margin: 0 }}>User name</p>
-                                <p style={{ fontSize: "14px", margin: 0 }}>loremIpsum@gmail.com</p>
+                                <p style={{ fontSize: "16px", fontWeight: "bold", color: "black", margin: 0 }}>{userData.userName}</p>
+                                <p style={{ fontSize: "14px", margin: 0 }}>{userData.userEmail}</p>
                             </div>
                         </li>
                         <li 

@@ -2,12 +2,15 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import SidebarAndNavbar from './SidebarAndNavbar';
 import fileIcon from '../assets/file.svg';
+import { useNavigate } from 'react-router-dom'; // ✅ Importer le hook
+import dashboard from '../assets/dashboard.svg';
 
-const Filesview = () => {
-  const [view, setView] = useState('Files View');
-  const [filterDate, setFilterDate] = useState('');
+const Filesview = ({ filterDate }) => {
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  
+  const navigate = useNavigate();
 
   // Fetch uploaded files from backend
   useEffect(() => {
@@ -49,6 +52,9 @@ const Filesview = () => {
 
     return true;
   });
+  const handleClick = (id) => {
+    navigate(`/Dashboard?id=${id}`); // ✅ Redirection avec paramètre d’URL
+  };
   return (
     <div style={{ backgroundColor: '#F6F4F2', minHeight: '100vh' }}>
       <div
@@ -74,7 +80,7 @@ const Filesview = () => {
             gap: '20px'
           }}
         >
-          {files.map((fileItem, idx) => (
+          {filteredFiles.map((fileItem, idx) => (
             <div
               key={idx}
               onClick={() => console.log(`Clicked ${fileItem.url}`)}
@@ -95,7 +101,7 @@ const Filesview = () => {
                 style={{ width: '60px', height: '60px' }}
               />
               <span style={{ marginTop: '10px', fontWeight: '500', fontSize: '14px', textAlign: 'center' }}>
-                {fileItem.url}
+                {fileItem.url.split('/').pop()}
               </span>
               <span style={{ marginTop: '4px', fontSize: '12px', color: '#666' }}>
                 {fileItem.date_upload}

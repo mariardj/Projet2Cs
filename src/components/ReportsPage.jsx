@@ -12,18 +12,19 @@ const [filterDate, setFilterDate] = useState('');
 
 
 
-  const renderView = () => {
-    switch (selectedView) {
-      case 'Table View':
-        return <TableView />;
-      case 'Dashboards View':
-        return <Dashboardsview />;
-      case 'Files View':
-        return <Filesview />;
-      default:
-        return <TableView />;
-    }
-  };
+const renderView = () => {
+  switch (selectedView) {
+    case 'Table View':
+      return <TableView filterDate={filterDate}/>;
+    case 'Dashboards View':
+      return <Dashboardsview filterDate={filterDate} />;
+    case 'Files View':
+      return <Filesview filterDate={filterDate} />;
+    default:
+      return <TableView />;
+  }
+};
+
 
   return (
     <div className="reports-page" style={{ display: 'flex', height: '100vh', fontFamily: 'Inter, sans-serif' }}>
