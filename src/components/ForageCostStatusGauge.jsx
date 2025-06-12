@@ -17,7 +17,7 @@ export default function ForageCostStatusGauge({ idForage, small = false }) {
     const fetchForageCostStatus = async () => {
       if (!idForage) {
         console.warn('idForage is missing or invalid:', idForage);
-        setError('Missing drilling ID');
+        setError('Error');
         setLoading(false);
         return;
       }
@@ -45,11 +45,11 @@ export default function ForageCostStatusGauge({ idForage, small = false }) {
         console.error('Error fetching drilling cost status:', err);
 
         if (err.response) {
-          setError(`Error ${err.response.status}: ${err.response.data?.error || err.response.data?.message || 'Server error'}`);
+          setError(`Something is wrong ${err.response.status}: ${err.response.data?.error || err.response.data?.message || 'Server error'}`);
         } else if (err.request) {
           setError('Connection error');
         } else {
-          setError(`Error: ${err.message}`);
+          setError(`Check your notifications: ${err.message}`);
         }
       } finally {
         setLoading(false);
@@ -61,7 +61,7 @@ export default function ForageCostStatusGauge({ idForage, small = false }) {
 
   const formatAmount = (amount) => {
     if (amount === null || amount === undefined || isNaN(amount)) {
-      return '0 €';
+      return '0 DZD';
     }
     return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'DZD' }).format(amount);
   };
@@ -128,13 +128,13 @@ export default function ForageCostStatusGauge({ idForage, small = false }) {
         }}
       >
         <h3 style={{ fontSize: size.fontSize, marginBottom: '12px', color: '#B60000' }}>
-          Error
+          Something is wrong
         </h3>
         <p style={{ fontSize: '12px', color: '#666', lineHeight: '1.4' }}>
           {error}
         </p>
         <p style={{ fontSize: '10px', color: '#999', marginTop: '4px' }}>
-          Drilling ID: {idForage}
+          Check your notifications
         </p>
         <button
           onClick={() => window.location.reload()}

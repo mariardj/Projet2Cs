@@ -41,22 +41,22 @@ const StatsCards = ({ idForage }) => {
     {
       title: 'Total Drilling Days',
       value: `${data.nombre_de_jours} days`,
-      change: '▲7%',
-      note: 'over planned',
+      // change: '▲7%',
+      // note: 'over planned',
       color: '#B60000'
     },
     {
       title: 'Actual cost for today',
       value: `$ ${data.cout_actuel.toLocaleString()}`,
-      change: '▲1.3%',
-      note: 'from past week',
+      // change: '▲1.3%',
+      // note: 'from past week',
       color: '#B60000'
     },
     {
       title: 'Cumulative cost',
       value: `$${data.cout_cumulatif.toLocaleString()}`,
-      change: '▲1%',
-      note: 'planned cost',
+      // change: '▲1%',
+      // note: 'planned cost',
       color: '#B60000'
     },
     {

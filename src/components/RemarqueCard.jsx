@@ -41,8 +41,9 @@ const RemarqueCard = ({ idForage }) => {
   }
 
   const { titre, observation, priorite } = remarque;
-  const severity = priorite.priority_remarque; // ✅ On accède à la valeur à afficher
-  const color = severityColors[severity] || severityColors['FAIBLE'];
+const severity = priorite?.priority_remarque || 'LOW';
+const color = severityColors[severity] || severityColors['LOW'];  
+
 
   return (
     <div style={{

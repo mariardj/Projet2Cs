@@ -18,7 +18,7 @@ export default function ForageDelayStatusGauge({ idForage, small = false }) {
     const fetchForageDelayStatus = async () => {
       if (!idForage) {
         console.warn('idForage est manquant ou invalide:', idForage);
-        setError('ID forage manquant');
+        setError('Error');
         setLoading(false);
         return;
       }
@@ -46,7 +46,7 @@ export default function ForageDelayStatusGauge({ idForage, small = false }) {
         console.error('Erreur lors de la récupération du statut délai forage:', err);
         
         if (err.response) {
-          setError(`Erreur ${err.response.status}: ${err.response.data?.error || err.response.data?.message || 'Erreur serveur'}`);
+          setError(`Something is wrong ${err.response.status}: ${err.response.data?.error || err.response.data?.message || 'Erreur serveur'}`);
         } else if (err.request) {
           setError('Erreur de connexion au serveur');
         } else {
@@ -158,13 +158,13 @@ export default function ForageDelayStatusGauge({ idForage, small = false }) {
         }}
       >
         <h3 style={{ fontSize: size.fontSize, marginBottom: '12px', color: '#B60000' }}>
-          Erreur
+          Something is wrong
         </h3>
         <p style={{ fontSize: '12px', color: '#666', lineHeight: '1.4' }}>
           {error}
         </p>
         <p style={{ fontSize: '10px', color: '#999', marginTop: '4px' }}>
-          ID Forage: {idForage}
+          Check your notifications
         </p>
         <button 
           onClick={() => window.location.reload()} 
@@ -179,7 +179,7 @@ export default function ForageDelayStatusGauge({ idForage, small = false }) {
             cursor: 'pointer'
           }}
         >
-          Réessayer
+          Retry
         </button>
       </div>
     );
