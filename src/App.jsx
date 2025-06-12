@@ -6,7 +6,7 @@ import Notifications from './components/Notifications';
 import HistoryP from './components/HistoryP';
 import Dashboard from './components/Dashboard';
 import ReportsPage from './components/ReportsPage';
-
+import DashboardWrapper from './components/DashboardWrapper';
 
 function App() {
 
@@ -18,9 +18,12 @@ function App() {
         <Route path="/Home" element={<Home />} />
     
         <Route path="/Notifications" element={<Notifications />} />
+        
+        <Route path="/Dashboard/:idForage" element={<DashboardWrapper />} />
        
 
         <Route path="/Dashboard" element={<Dashboard idForage={68}/>} />
+        
              <Route path="/reports" element={<ReportsPage />} />
       </Routes>
 

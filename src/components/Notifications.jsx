@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import SidebarAndNavbar from './SidebarAndNavbar';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
 
 
 const Notifications = () => {
   const [activeTab, setActiveTab] = useState('ALL');
+  const navigate = useNavigate();
+
   const [notificationData, setNotificationData] = useState({
     ALL: { Analysed: 0, 'Not analysed': 0 },
     notifications: []
@@ -35,9 +39,11 @@ const Notifications = () => {
           message: item.message || "Nouvelle notification",
           time_ago: item.time_ago || "Récemment",
           analysed: !!item.analysed,
-          forage_info: item.forage_info || "Non spécifié"
+          forage_info: item.forage_info || "Non spécifié",
+          id_forage: item.id_forage || item.forage_id || null
         }))
       });
+      console.log('Notifications sssssssssssssssssssssdata:', results);
       
       setError(null);
     } catch (err) {
@@ -54,31 +60,58 @@ const Notifications = () => {
     return () => clearInterval(interval);
   }, [activeTab]);
 
-  const handleAnalyse = async (notificationId) => {
+ const handleAnalyse = async (notificationId) => {
   try {
-    await axios.post('http://127.0.0.1:8000/myapp/public/notifications/mark_analysed/', {
+    // Récupérer la notification concernée
+    const notif = notificationData.notifications.find(n => n.id === notificationId);
+    if (!notif) {
+      console.warn("Notification introuvable.");
+      return;
+    }
+
+    // Extraire l'ID du forage - CORRECTION ICI
+    const idForage = notif.id_forage;
+
+    if (!idForage || idForage === 0) {
+      console.warn("Aucun ID de forage trouvé pour cette notification.");
+      alert("Cette notification n'est pas liée à un forage spécifique.");
+      return;
+    }
+
+    // Requête pour marquer la notification comme analysée
+    await axios.post('http://127.0.0.1:8000/myapp/public/notifications/', {
       notification_id: notificationId
     });
-    
+
+    // Mise à jour de l'état local pour refléter le changement
     setNotificationData(prev => {
-      const updatedNotifications = prev.notifications.map(n => 
+      const updatedNotifications = prev.notifications.map(n =>
         n.id === notificationId ? { ...n, analysed: true } : n
       );
-      
+
+      const analysedCount = updatedNotifications.filter(n => n.analysed).length;
+      const notAnalysedCount = updatedNotifications.length - analysedCount;
+
       return {
         ...prev,
         notifications: updatedNotifications,
         ALL: {
-          'Not analysed': updatedNotifications.filter(n => !n.analysed).length,
-          'Analysed': updatedNotifications.filter(n => n.analysed).length
+          'Not analysed': notAnalysedCount,
+          'Analysed': analysedCount
         }
       };
     });
-    
+
+    // Redirection vers le dashboard avec l'ID du forage
+    navigate(`/dashboard/${idForage}`);
+
   } catch (err) {
-    console.error("Erreur d'analyse:", err);
+    console.error("Erreur lors de l'analyse de la notification :", err);
+    alert("Erreur lors de l'analyse de la notification.");
   }
 };
+
+
 
   const handleManualRefresh = () => {
     fetchNotifications();

@@ -201,7 +201,7 @@ setTimeout(() => {
               <button
                 onClick={excelFile ? openModal : null}
                 disabled={!excelFile}
-                style={{ backgroundColor: excelFile ? '#FF8500' : '#D9D9D9', color: 'white', border: 'none', padding: '8px 20px', borderRadius: 4, cursor: excelFile ? 'pointer' : 'not-alLOWed', fontSize: 14, margin: '0 auto' }}
+                style={{ backgroundColor: excelFile ? '#FF8500' : '#D9D9D9', color: 'white', border: 'none', padding: '8px 20px', borderRadius: 4, cursor: excelFile ? 'pointer' : 'not-allowed', fontSize: 14, margin: '0 auto' }}
               >
                 Add Remark
               </button>
