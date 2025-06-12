@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, Area } from 'recharts';
+import {
+  LineChart, Line, XAxis, YAxis, Tooltip,
+  CartesianGrid, ResponsiveContainer, Area
+} from 'recharts';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
@@ -16,60 +19,55 @@ export default function ReservoirProgressChart({ idForage }) {
       setLoading(false);
       return;
     }
-    
+
     const apiUrl = `${API_BASE_URL}/myapp/api/forage/${idForage}/phases/`;
     console.log("Appel API pour depth chart:", apiUrl);
-    
+
     axios.get(apiUrl)
       .then(response => {
-        console.log("Réponse API depth chart:", response.data);
-        
         const { phases, zone, id_forage } = response.data;
-        
+
         if (!phases || phases.length === 0) {
-          console.log("Aucune phase trouvée pour le depth chart");
           setError("Aucune phase trouvée");
           setLoading(false);
           return;
         }
-        
-        // Store forage information
+
         setForageInfo({ zone, id_forage });
 
-        // Transform phases data for the chart - create date sequence
-        const transformedData = phases.map((phase, index) => {
-          // Create a date sequence starting from today, going backwards or forwards
-          const today = new Date();
-          const phaseDate = new Date(today);
-          phaseDate.setDate(today.getDate() + (index * 7)); // Add 7 days for each phase
-          
+        // Trier les phases par date_debut
+        const sortedPhases = [...phases].sort((a, b) => new Date(a.date_debut) - new Date(b.date_debut));
+
+        // Transformation des données
+        const transformedData = sortedPhases.map((phase) => {
+          const rawDate = phase.date_debut;
+          const phaseDate = rawDate ? new Date(rawDate) : null;
+
           return {
-            date: phaseDate.toLocaleDateString('fr-FR', { 
-              month: 'short', 
-              day: 'numeric' 
-            }), // Format: "Jan 15"
+            date: phaseDate ? phaseDate.toLocaleDateString('fr-FR', {
+              month: 'short',
+              day: 'numeric'
+            }) : 'Date inconnue',
+
             value: phase.depth || 0,
             phase: phase.nom_phase,
             etat: phase.etat,
             delai: phase.delai || 0,
-            fullDate: phaseDate.toLocaleDateString('fr-FR')
+            fullDate: phaseDate ? phaseDate.toLocaleDateString('fr-FR') : 'Date inconnue'
           };
         });
 
-        console.log("Données transformées pour depth chart:", transformedData);
         setChartData(transformedData);
         setLoading(false);
       })
       .catch(error => {
         console.error("Erreur lors du chargement des phases pour depth chart:", error);
-        console.error("Détails de l'erreur:", error.response?.data);
         setError("Erreur lors du chargement des données");
         setLoading(false);
       });
   }, [idForage]);
 
-  // Custom tooltip to show phase information
-  const CustomTooltip = ({ active, payload, label }) => {
+  const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
@@ -118,47 +116,41 @@ export default function ReservoirProgressChart({ idForage }) {
   return (
     <div style={{ background: "white", borderRadius: "10px", padding: "20px" }}>
       <h2 style={{ marginBottom: "10px" }}>
-        Progress of Reached Depth 
+        Progression de la profondeur atteinte
       </h2>
-      <p style={{ color: "#000000", marginBottom: "20px" }}>Depth Level by Phase</p>
-       
-      {/* Responsive chart container that adapts to parent size */}
+      <p style={{ color: "#000000", marginBottom: "20px" }}>Niveau de profondeur par phase</p>
+
       <ResponsiveContainer width="100%" height={300}>
         <LineChart data={chartData}>
-          {/* Gradient definition for the area fill */}
           <defs>
             <linearGradient id="colorLine" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#3B82F6" stopOpacity={0.4} />
               <stop offset="100%" stopColor="#3B82F6" stopOpacity={0} />
             </linearGradient>
           </defs>
-           
-          {/* Chart grid lines and axes */}
+
           <CartesianGrid strokeDasharray="3 3" vertical={false} />
           <XAxis dataKey="date" />
-          <YAxis 
-            label={{ value: 'Depth (m)', angle: -90, position: 'insideLeft', padding: 20 }} 
+          <YAxis
+            label={{ value: 'Profondeur (m)', angle: -90, position: 'insideLeft', padding: 20 }}
             reversed={true}
           />
           <Tooltip content={<CustomTooltip />} />
-           
-          {/* Visual elements */}
-          <Area 
-             type="monotone"
-             dataKey="value"
-             fill="url(#colorLine)"
+
+          <Area
+            type="monotone"
+            dataKey="value"
+            fill="url(#colorLine)"
           />
-          <Line 
-             type="monotone"
-             dataKey="value"
-             stroke="#3B82F6"
-             strokeWidth={2}
-             dot={{ fill: "#3B82F6", strokeWidth: 2, r: 4 }}
+          <Line
+            type="monotone"
+            dataKey="value"
+            stroke="#3B82F6"
+            strokeWidth={2}
+            dot={{ fill: "#3B82F6", strokeWidth: 2, r: 4 }}
           />
         </LineChart>
       </ResponsiveContainer>
-      
-      
     </div>
   );
 }

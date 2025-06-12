@@ -12,10 +12,10 @@ import ForageCostStatusGauge from './ForageCostStatusGauge';
 const Dashboard = ({ idForage }) => {
   return (
     <div style={{ backgroundColor: '#F6F4F2', minHeight: '100vh' }}>
-      {/* Navbar and Sidebar */}
+      {/* Sidebar & Navbar */}
       <SidebarAndNavbar style={{ zIndex: '9999' }} />
 
-      {/* Stats Cards */}
+      {/* Main content */}
       <div
         style={{
           padding: '20px',
@@ -24,108 +24,103 @@ const Dashboard = ({ idForage }) => {
           boxSizing: 'border-box',
         }}
       >
+        {/* Stats Cards */}
         <div
           style={{
             display: 'flex',
             gap: '16px',
             flexWrap: 'nowrap',
             justifyContent: 'space-between',
+            marginBottom: '30px',
           }}
         >
           <StatsCards idForage={idForage} small={true} />
         </div>
-      </div>
 
-      {/* Charts + Gauges */}
-      <div style={{ display: 'flex' }}>
+        {/* Gauges + Charts */}
         <div
           style={{
-            marginLeft: '17vw',
-            padding: '20px',
-            flex: 1,
-            boxSizing: 'border-box',
+            display: 'grid',
+            gridTemplateColumns: '2fr 1fr',
+            gap: '24px',
+            alignItems: 'start',
           }}
         >
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '2fr 1fr',
-              gap: '20px',
-            }}
-          >
-            {/* Left: Charts */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              <div style={{ width: '100%' }}>
-                <DrillingProgressChart idForage={idForage} />
-              </div>
-              <div style={{ width: '100%' }}>
-                <ReservoirProgressChart idForage={idForage} />
-              </div>
+          {/* Left: Charts & Infos */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            <DrillingProgressChart idForage={idForage} />
+            <ReservoirProgressChart idForage={idForage} />
+
+            <div style={{
+              backgroundColor: '#ffffff',
+              borderRadius: '12px',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+              padding: '15px',
+              width: '100%',
+            }}>
+              <RemarqueCard idForage={idForage} />
             </div>
 
-            {/* Right: Gauges - Sans conteneur global */}
             <div style={{
               display: 'flex',
-              flexDirection: 'column',
-              gap: '30px',
-              position: 'sticky',
-              top: '80px',
-              paddingRight: '10px' // Padding à droite maintenu
+              gap: '20px',
+              flexWrap: 'wrap',
+              justifyContent: 'space-between',
             }}>
-              <div style={{ 
+              <div style={{
+                flex: 1,
+                minWidth: '280px',
                 backgroundColor: '#ffffff',
                 borderRadius: '12px',
                 boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                 padding: '15px',
-                width: '100%'
-              }}>
-                <CostStatusGauge idForage={idForage} />
-              </div>
-              
-              <div style={{ 
-                backgroundColor: '#ffffff',
-                borderRadius: '12px',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                padding: '15px',
-                width: '100%'
-              }}>
-                <DeadlineStatusGauge idForage={idForage} />
-              </div>
-              
-              <div style={{ 
-                backgroundColor: '#ffffff',
-                borderRadius: '12px',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                padding: '15px',
-                width: '100%'
               }}>
                 <ForageCostStatusGauge idForage={idForage} />
               </div>
-              
-              <div style={{ 
+
+              <div style={{
+                flex: 1,
+                minWidth: '280px',
                 backgroundColor: '#ffffff',
                 borderRadius: '12px',
                 boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                 padding: '15px',
-                width: '100%'
               }}>
                 <ForageDelayStatusGauge idForage={idForage} />
               </div>
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* Remarque Card */}
-      <div
-        style={{
-          marginLeft: '17vw',
-          padding: '20px',
-          boxSizing: 'border-box',
-        }}
-      >
-        <div style={{ maxWidth: '48rem', width: '100%' }}>
-          <RemarqueCard  idForage={idForage}/>
+          {/* Right: Sticky Gauges */}
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '30px',
+              position: 'sticky',
+              top: '80px',
+            }}
+          >
+            <div style={{
+              backgroundColor: '#ffffff',
+              borderRadius: '12px',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+              padding: '15px',
+              width: '100%',
+            }}>
+              <CostStatusGauge idForage={idForage} />
+            </div>
+
+            <div style={{
+              backgroundColor: '#ffffff',
+              borderRadius: '12px',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+              padding: '15px',
+              width: '100%',
+            }}>
+              <DeadlineStatusGauge idForage={idForage} />
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -133,6 +128,7 @@ const Dashboard = ({ idForage }) => {
 };
 
 export default Dashboard;
+
 // import React from 'react';
 // import SidebarAndNavbar from './SidebarAndNavbar';
 // import StatsCards from './StatsCards';

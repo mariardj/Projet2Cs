@@ -194,15 +194,7 @@ export default function ForageCostStatusGauge({ idForage, small = false }) {
 
   return (
     <div
-      style={{
-        width: size.width + 40,
-        padding: '16px',
-        background: '#fff',
-        borderRadius: '10px',
-        boxShadow: '0 2px 12px rgba(0, 0, 0, 0.05)',
-        textAlign: 'center',
-        boxSizing: 'border-box',
-      }}
+      
     >
       <h3 style={{ fontSize: size.fontSize, marginBottom: '8px', color: '#333' }}>
         Drilling cost status

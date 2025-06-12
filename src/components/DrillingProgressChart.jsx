@@ -129,14 +129,7 @@ const DrillingProgressChart = ({ idForage }) => {
   };
 
   return (
-    <div style={{
-      maxWidth: '700px',
-      margin: '40px auto',
-      padding: '20px',
-      background: '#fff',
-      borderRadius: '10px',
-      boxShadow: '0 2px 12px rgba(0, 0, 0, 0.05)'
-    }}>
+    <div style={{ background: "white", borderRadius: "10px", padding: "20px" }}>
       {/* Titre au même style que ReservoirProgressChart */}
       <h2 style={{ marginBottom: "10px" }}>
         Drilling Progress Chart

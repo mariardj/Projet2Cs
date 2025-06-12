@@ -17,7 +17,7 @@ export default function CostStatusGauge({ idForage, small = false }) {
     const fetchCostStatus = async () => {
       if (!idForage) {
         console.warn('idForage is missing or invalid:', idForage);
-        setError('Missing forage ID');
+        setError('Check your notifications');
         setLoading(false);
         return;
       }
@@ -125,9 +125,9 @@ export default function CostStatusGauge({ idForage, small = false }) {
   const isValueCapped = segments.current_value > segments.max_value;
 
   return (
-    <div style={{ width: size.width + 40, padding: '16px', background: '#fff', borderRadius: '10px', textAlign: 'center' }}>
+    <div >
       <h3 style={{ fontSize: size.fontSize, marginBottom: '8px', color: '#333' }}>
-        Cost status of the current phase
+         Current phase Cost status
       </h3>
        <div
         style={{

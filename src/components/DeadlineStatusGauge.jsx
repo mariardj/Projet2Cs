@@ -16,7 +16,7 @@ export default function DelayStatusGauge({ idForage, small = false }) {
   useEffect(() => {
     const fetchDelayStatus = async () => {
       if (!idForage) {
-        setError('Missing drilling ID');
+        setError('Check your notifications');
         setLoading(false);
         return;
       }
@@ -89,13 +89,9 @@ export default function DelayStatusGauge({ idForage, small = false }) {
   return (
     <div
       style={{
-        width: size.width + 40,
-        padding: '16px',
-        background: '#fff',
-        borderRadius: '10px',
-        boxShadow: '0 2px 12px rgba(0, 0, 0, 0.05)',
-        textAlign: 'center',
-        boxSizing: 'border-box',
+       
+        padding: '10px',
+        
       }}
     >
       <h3 style={{ fontSize: size.fontSize, marginBottom: '8px', color: '#333' }}>
