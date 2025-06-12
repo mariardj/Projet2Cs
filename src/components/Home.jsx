@@ -22,7 +22,7 @@ class Remarque {
     this.idremarque = uuidv4();
     this.idrapport = rapportId;
     this.title = '';
-    this.priority = 'Medium';
+    this.priority = 'MEDIUM';
     this.observation = '';
     this.solution = '';
   }
@@ -201,7 +201,7 @@ setTimeout(() => {
               <button
                 onClick={excelFile ? openModal : null}
                 disabled={!excelFile}
-                style={{ backgroundColor: excelFile ? '#FF8500' : '#D9D9D9', color: 'white', border: 'none', padding: '8px 20px', borderRadius: 4, cursor: excelFile ? 'pointer' : 'not-allowed', fontSize: 14, margin: '0 auto' }}
+                style={{ backgroundColor: excelFile ? '#FF8500' : '#D9D9D9', color: 'white', border: 'none', padding: '8px 20px', borderRadius: 4, cursor: excelFile ? 'pointer' : 'not-alLOWed', fontSize: 14, margin: '0 auto' }}
               >
                 Add Remark
               </button>
@@ -263,9 +263,9 @@ setTimeout(() => {
               <div style={{ flex: 1 }}>
                 <label>Priority</label>
                 <select name="priority" value={remark.priority} onChange={handleRemarkChange} style={{ width: '100%', padding: 8, borderRadius: 4, border: '1px solid #CCC' }}>
-                  <option>Low</option>
-                  <option>Medium</option>
-                  <option>High</option>
+                  <option>LOW</option>
+                  <option>MEDIUM</option>
+                  <option>HIGH</option>
                 </select>
               </div>
             </div>

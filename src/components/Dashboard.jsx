@@ -56,10 +56,10 @@ const Dashboard = ({ idForage }) => {
             {/* Left: Charts */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
               <div style={{ width: '100%' }}>
-                <DrillingProgressChart />
+                <DrillingProgressChart idForage={idForage} />
               </div>
               <div style={{ width: '100%' }}>
-                <ReservoirProgressChart />
+                <ReservoirProgressChart idForage={idForage} />
               </div>
             </div>
 
@@ -125,7 +125,7 @@ const Dashboard = ({ idForage }) => {
         }}
       >
         <div style={{ maxWidth: '48rem', width: '100%' }}>
-          <RemarqueCard />
+          <RemarqueCard  idForage={idForage}/>
         </div>
       </div>
     </div>

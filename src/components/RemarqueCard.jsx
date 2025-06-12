@@ -1,26 +1,48 @@
-import React from 'react';
-import remark from '../assets/remark.svg'; // Replace with your actual SVG file
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import remark from '../assets/remark.svg'; // Assure-toi que ce fichier existe
 
 const severityColors = {
-  High: {
+  HIGH: {
     bg: '#F8D7DA',
     text: '#D32F2F',
     dot: '#D32F2F',
   },
-  Medium: {
+  MEDIUM: {
     bg: '#FFE7CC',
     text: '#FF8500',
     dot: '#FF8500',
   },
-  Low: {
+  LOW: {
     bg: '#D2F4EF',
     text: '#00B69B',
     dot: '#00B69B',
   },
 };
 
-const RemarqueCard = ({ title, body, severity }) => {
-  const color = severityColors[severity] || severityColors['Low'];
+const RemarqueCard = ({ idForage }) => {
+  const [remarque, setRemarque] = useState(null);
+
+  useEffect(() => {
+    const fetchRemarque = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8000/myapp/api/forage/${idForage}/remarque/`);
+        setRemarque(response.data.remarque);
+      } catch (error) {
+        console.error('Erreur lors de la récupération de la remarque :', error);
+      }
+    };
+
+    fetchRemarque();
+  }, [idForage]);
+
+  if (!remarque) {
+    return <div>Aucune remarque disponible.</div>;
+  }
+
+  const { titre, observation, priorite } = remarque;
+  const severity = priorite.priority_remarque; // ✅ On accède à la valeur à afficher
+  const color = severityColors[severity] || severityColors['FAIBLE'];
 
   return (
     <div style={{
@@ -35,18 +57,14 @@ const RemarqueCard = ({ title, body, severity }) => {
       justifyContent: 'space-between',
       maxWidth: '100%',
     }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
         <img
           src={remark}
           alt="Remarque Icon"
-          style={{
-            width: '20px',
-            height: '20px',
-            objectFit: 'contain'
-          }}
+          style={{ width: '20px', height: '20px', objectFit: 'contain' }}
         />
         <div style={{ fontSize: '14px', color: '#333' }}>
-          <strong>{title}:</strong> {body}
+          <strong>{titre}:</strong> {observation}
         </div>
       </div>
 
